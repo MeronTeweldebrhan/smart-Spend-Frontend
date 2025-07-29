@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { backendClient } from "../Clients/backendClient";
-
+import backendClient  from "../Clients/backendClient";
+import { useAuth } from "../Context/useAuth.js";
 function SignupPage() {
 const [formData, setFormData] = useState({
   username: "",
     email: "",
     password: "",
 })
+const { login } = useAuth();
 const navigate = useNavigate();
 const handlechange =(e)=>{
     const { name, value } = e.target;
@@ -28,7 +29,7 @@ const handleSignup = async (e) => {
         console.log("Signup successful:", user);
         console.log("Token:", token);
     
-        localStorage.setItem("Stoken", token);
+         login(token);
         navigate("/login");
     } catch (error) {
         console.error("Signup error:", error);

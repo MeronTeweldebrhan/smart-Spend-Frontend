@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { backendClient } from "../Clients/backendClient.js";
-
+import  backendClient  from "../Clients/backendClient.js";
+import { useAuth } from "../Context/useAuth.js";
 
 function LoginPage() {
  const [formData, setFormData] = useState({
@@ -9,7 +9,7 @@ function LoginPage() {
     password: "",
   });
   const navigate = useNavigate();
-
+ const { login } = useAuth()
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -22,14 +22,14 @@ function LoginPage() {
     e.preventDefault();
     try {
       const response = await backendClient.post("/users/login", formData);
-      const { token, user } = response.data;
-      
-      console.log("Login successful:", user);
-      console.log("Token:", token);
+    //   const { token, user } = response.data;
 
-        localStorage.setItem("Stoken", token);
+    //   console.log("Login successful:", user);
+    //   console.log("Token:", token);
+
+        login(response.data.token);
     
-        navigate("/");
+        navigate("/dashboard");
       
     } catch (error) {
       console.error("Login error:", error);
