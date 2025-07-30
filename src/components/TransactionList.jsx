@@ -166,7 +166,7 @@ function TransactionList() {
                 <td className="p-3 truncate max-w-xs">{tx.description}</td>
                 <td className="p-3">
                   <button
-                    onClick={() => navigate(`/transactions/${tx._id}`)}
+                    onClick={() => navigate(`/transaction/${tx._id}`)}
                     className="text-blue-600 hover:underline"
                   >
                     View
