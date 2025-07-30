@@ -142,7 +142,7 @@ function TransactionList() {
       </div>
 
       {/* Transaction Table */}
-      <div className="overflow-x-auto">
+      <div className="overflow-y-auto max-h-[300px] border rounded">
         <table className="min-w-full border rounded-lg bg-white shadow-sm">
           <thead className="bg-gray-100 text-sm text-gray-600">
             <tr>

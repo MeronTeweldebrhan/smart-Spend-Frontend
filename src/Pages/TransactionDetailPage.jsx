@@ -10,7 +10,7 @@ function TransactionDetailsPage() {
   const navigate = useNavigate();
   const [tx, setTx] = useState(null);
   const [editing, setEditing] = useState(false);
-    const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   const fetchTx = async () => {
     try {
@@ -38,8 +38,8 @@ function TransactionDetailsPage() {
     setTx(updated.data);
     setEditing(false);
   };
-//==Fetchi catgegories to edit drop down===///
-    useEffect(() => {
+  //==Fetchi catgegories to edit drop down===///
+  useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await backendClient.get("/category");
@@ -120,24 +120,26 @@ function TransactionDetailsPage() {
           <input
             name="date"
             type="date"
-            value={tx.date.split("T")[0]} // Format date for input
+            value={tx.date ? tx.date.split("T")[0] : ""}
             onChange={(e) => setTx({ ...tx, date: e.target.value })}
             className="w-full border p-2"
             placeholder="Date"
           />
           <select
-          name="category"
-          value={categories}
-          onChange={(e) => setTx({ ...tx, date: e.target.value })}
-          className="border px-3 py-2 rounded w-50"
-        >
-          <option value="">All Categories</option>
-          {categories.map((cat) => (
-            <option key={cat._id} value={cat._id}>
-              {cat.name}
-            </option>
-          ))}
-        </select>
+            name="category"
+            value={tx.category?._id || ""}
+            onChange={(e) =>
+              setTx({ ...tx, category: { _id: e.target.value } })
+            }
+            className="border px-3 py-2 rounded w-50"
+          >
+            <option value="">All Categories</option>
+            {categories.map((cat) => (
+              <option key={cat._id} value={cat._id}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
           <input
             name="description"
             type="text"
