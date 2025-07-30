@@ -4,6 +4,8 @@ import SignupPage from "./Pages/SignupPage"
 import Homepage from "./Pages/HomePage"
 import Dashboard from "./Pages/Dashboard"
 import ReportsPage from "./Pages/ReportsPage"
+import CategoryPage from "./Pages/CategoryPage"
+import TransactionDetailsPage from "./Pages/TransactionDetailPage"
 import { Routes,Route } from "react-router-dom"
 import PrivateRoute from "./components/PrivateRoute"
 import Navbar from "./components/Navbar"
@@ -22,6 +24,10 @@ function App() {
          <Route path="/login" element={<LoginPage />} />
 
          {/*  Only logged-in users can see this */}
+        <Route path="/category"
+          element={<PrivateRoute>
+                <CategoryPage />
+              </PrivateRoute>} />
           <Route path="/reports"
           element={<PrivateRoute>
                 <ReportsPage />
@@ -34,6 +40,7 @@ function App() {
         element={<PrivateRoute>
               <TransactionPage />         
             </PrivateRoute>} />
+            <Route path="/transactions/:id" element={<TransactionDetailsPage />} />
         <Route path="*" element={<h1>Page Not Found</h1>} />
       </Routes>
       <Footbar />
