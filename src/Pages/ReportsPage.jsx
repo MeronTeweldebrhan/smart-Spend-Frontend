@@ -2,11 +2,11 @@ import TransactionList from "../components/TransactionList";
 
 function ReportsPage() {
   return (
-    <div>
-      <h1>Reports Page</h1>
+    <div className="p-4">
+      <h1 className="text-3xl font-bold mb-6">Reports Page</h1>
       <TransactionList />
-      {/* Add your reports page content here */}
     </div>
   );
+  
 }
 export default ReportsPage;
