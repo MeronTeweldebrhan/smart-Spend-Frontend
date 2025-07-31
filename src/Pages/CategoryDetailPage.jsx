@@ -7,7 +7,7 @@ import { useAuth } from "../Context/useAuth";
 function CategoryDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, activeAccountId } = useAuth();
   const isEditing = id !== "new";
   const [category, setCategory] = useState({ name: "", description: "" });
 
@@ -40,7 +40,9 @@ function CategoryDetailPage() {
         await backendClient.put(`/category/${id}`, category);
         alert("Category updated");
       } else {
-        await backendClient.post("/category", category);
+        await backendClient.post("/category",{ ...category,
+          accountId: activeAccountId,
+        });
         alert("Category created");
       }
       navigate("/category");

@@ -4,7 +4,7 @@ import { useAuth } from '../Context/useAuth';
 import { useNavigate } from 'react-router-dom';
 
 function CategoryPage() {
-  const { user } = useAuth();
+  const { user,activeAccountId } = useAuth();
   const [categories, setCategories] = useState([]);
 const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
@@ -12,15 +12,19 @@ const [searchTerm, setSearchTerm] = useState('');
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await backendClient.get('/category');
+        const response = await backendClient.post('/category/all',{
+          accountId: activeAccountId,
+        });
+         console.log("categories:",response.data)
         setCategories(response.data);
+       
       } catch (error) {
         console.error('Error fetching categories:', error);
         alert('Failed to load categories. Please try again.');
       }
     };
     fetchCategories();
-  }, [user]);
+  }, [user, activeAccountId]);
 
   //== Handle search functionality  ===///
   const filteredCategories = categories.filter(
