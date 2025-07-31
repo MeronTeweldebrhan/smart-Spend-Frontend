@@ -12,7 +12,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import Navbar from "./components/Navbar";
 import Footbar from "./components/Footbar";
 import NotFoundPage from "./Pages/NotFoundPage";
-
+import SettingsPage from "./Pages/SettingsPage";
 function App() {
   return (
     <>
@@ -68,6 +68,14 @@ function App() {
           element={
             <PrivateRoute>
               <TransactionDetailsPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <PrivateRoute>
+              <SettingsPage />
             </PrivateRoute>
           }
         />
