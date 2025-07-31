@@ -1,9 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import backendClient from "../Clients/backendClient.js";
 import { useAuth } from "../Context/useAuth.js";
 
 function TransactionForm() {
-  const { user } = useAuth();
+  const { user, activeAccountId } = useAuth();
   const [categories, setCategories] = useState([]);
   const [transactions, setTransactions] = useState([
     { amount: "", type: "", date: "", category: "", description: "" },
@@ -11,16 +12,33 @@ function TransactionForm() {
 
   // Fetch categories
   useEffect(() => {
+    console.log(
+      "useEffect for categories triggered. user:",
+      user,
+      "activeAccountId:",
+      activeAccountId
+    );
+    if (!user?._id || !activeAccountId) {
+      console.log("Skipping fetchCategories: missing user or activeAccountId");
+      return;
+    }
     const fetchCategories = async () => {
+      console.log("Fetching categories with payload:", {
+        accountId: activeAccountId,
+      });
       try {
-        const response = await backendClient.get("/category");
+        const response = await backendClient.post("/category/all", {
+          accountId: activeAccountId,
+        });
+        console.log("Categories response:", response.data);
         setCategories(response.data);
       } catch (error) {
-        console.error("Failed to fetch categories:", error.message);
+        console.error("Error fetching categories:", error);
+        alert("Failed to load categories. Please try again.");
       }
     };
-    if (user) fetchCategories();
-  }, [user]);
+    fetchCategories();
+  }, [user?._id, activeAccountId]);
 
   // Handle changes per row
   const handleChange = (index, e) => {
@@ -50,7 +68,11 @@ function TransactionForm() {
     }
 
     try {
-      const payload = transactions.map((t) => ({ ...t, userId: user._id }));
+      const payload = transactions.map((t) => ({
+        ...t,
+        userId: user._id,
+        accountId: activeAccountId,
+      }));
       console.log("Submitting payload:", payload);
 
       for (const tx of payload) {
@@ -122,14 +144,17 @@ function TransactionForm() {
                     value={tx.category}
                     onChange={(e) => handleChange(index, e)}
                     className="w-full px-2 py-1 border rounded"
-                    
                   >
                     <option value="">-- Select --</option>
-                    {categories.map((cat) => (
-                      <option key={cat._id} value={cat.name}>
-                        {cat.name}
-                      </option>
-                    ))}
+                    {categories.length > 0 ? (
+                      categories.map((cat) => (
+                        <option key={cat._id} value={cat._id}>
+                          {cat.name}
+                        </option>
+                      ))
+                    ) : (
+                      <option value="">Loading categories...</option>
+                    )}
                   </select>
                 </td>
                 <td className="p-2 border">

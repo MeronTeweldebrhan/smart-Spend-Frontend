@@ -6,7 +6,7 @@ import { useAuth } from "../Context/useAuth";
 
 function TransactionDetailsPage() {
   const { id } = useParams();
-  const { user } = useAuth();
+  const { user,activeAccountId } = useAuth();
   const navigate = useNavigate();
   const [tx, setTx] = useState(null);
   const [editing, setEditing] = useState(false);
@@ -14,7 +14,9 @@ function TransactionDetailsPage() {
 
   const fetchTx = async () => {
     try {
-      const res = await backendClient.get(`/transaction/${id}`);
+      const res = await backendClient.get(`/transaction/${id}`,{
+       params: { accountId: activeAccountId },
+      });
       setTx(res.data);
     } catch (err) {
       console.error("Error loading transaction", err);
@@ -34,7 +36,9 @@ function TransactionDetailsPage() {
   ///==Handle update===///
   const handleUpdate = async (e) => {
     e.preventDefault();
-    const updated = await backendClient.put(`/transaction/${id}`, tx);
+    const updated = await backendClient.put(`/transaction/${id}`,{ ...tx,
+      accountId:activeAccountId
+    });
     setTx(updated.data);
     setEditing(false);
   };
@@ -42,16 +46,19 @@ function TransactionDetailsPage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await backendClient.get("/category");
+        const response = await backendClient.post('/category/all',{
+          accountId: activeAccountId,
+        });
+         console.log("categories:",response.data)
         setCategories(response.data);
+       
       } catch (error) {
-        console.error("Error fetching categories:", error);
-        alert("Failed to load categories. Please try again.");
+        console.error('Error fetching categories:', error);
+        alert('Failed to load categories. Please try again.');
       }
     };
-
     fetchCategories();
-  }, [user]);
+  }, [user, activeAccountId]);
   if (!tx) return <p>Loading...</p>;
 
   return (
