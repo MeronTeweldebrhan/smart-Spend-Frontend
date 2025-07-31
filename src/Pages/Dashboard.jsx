@@ -1,54 +1,86 @@
 import { useAuth } from "../Context/useAuth";
-import { useEffect, useState } from 'react';
-import backendClient from '../Clients/backendClient';
+import { useEffect, useState } from "react";
+import backendClient from "../Clients/backendClient";
 import {
   BarChart,
   Bar,
   XAxis,
   YAxis,
   Tooltip,
-  ResponsiveContainer, 
+  ResponsiveContainer,
   PieChart,
   Pie,
   Cell,
-} from 'recharts';
-
+} from "recharts";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
-  const { user, } = useAuth();
-const [transactions, setTransactions] = useState([]);
-const [topCategories, setTopCategories] = useState([]);
-
+  const { user, activeAccountId } = useAuth();
+  const [transactions, setTransactions] = useState([]);
+  const [topIncomeCategories, setTopIncomeCategories] = useState([]);
+  const [topExpenseCategories, setTopExpenseCategories] = useState([]);
+  const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444"]; // Colors for PieChart
+const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const txRes = await backendClient.get('/transaction?limit=50');
+        console.log(
+          "Fetching transactions with activeAccountId:",
+          activeAccountId
+        );
+        const txRes = await backendClient.get("/transaction", {
+          params: { limit: 3, accountId: activeAccountId },
+        });
+        console.log(" response:", txRes.data);
         setTransactions(txRes.data);
 
-        const catTotals = {};
-        txRes.data.forEach((tx) => {
-          const name = tx.category?.name || 'Unknown';
-          catTotals[name] = (catTotals[name] || 0) + tx.amount;
-        });
-
-        const sorted = Object.entries(catTotals)
+        // Calculate top Income categories
+        const incomeTotals = {};
+        txRes.data
+          .filter((tx) => tx.type === "income")
+          .forEach((tx) => {
+            const name = tx.category?.name || "Unknown";
+            incomeTotals[name] = (incomeTotals[name] || 0) + tx.amount;
+          });
+        const sortedIncome = Object.entries(incomeTotals)
           .map(([name, total]) => ({ name, total }))
           .sort((a, b) => b.total - a.total)
-          .slice(0, 3);
+          .slice(0, 9);
+        setTopIncomeCategories(sortedIncome);
 
-        setTopCategories(sorted);
+        // Calculate top Expense categories
+        const expenseTotals = {};
+        txRes.data
+          .filter((tx) => tx.type === "expense")
+          .forEach((tx) => {
+            const name = tx.category?.name || "Unknown";
+            expenseTotals[name] = (expenseTotals[name] || 0) + tx.amount;
+          });
+        const sortedExpense = Object.entries(expenseTotals)
+          .map(([name, total]) => ({ name, total }))
+          .sort((a, b) => b.total - a.total)
+          .slice(0, 9);
+        setTopExpenseCategories(sortedExpense);
       } catch (err) {
-        console.error('Error loading dashboard data:', err);
+        console.error("Error loading dashboard data:", err);
+        alert("Failed to load dashboard data. Please try again.");
       }
     };
 
-    fetchData();
-  }, []);
+    if (activeAccountId) fetchData();
+  }, [activeAccountId]);
+
+  // Get the 3 most recent transactions
+  const recentTransactions = transactions
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 3);
   return (
     <div className="relative min-h-screen bg-white p-4">
       {/* Subtle background */}
-      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/asfalt-dark.png')]
- opacity-10 pointer-events-none z-0"></div>
+      <div
+        className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/asfalt-dark.png')]
+ opacity-10 pointer-events-none z-0"
+      ></div>
 
       <div className="relative z-10 max-w-6xl mx-auto">
         <h1 className="text-center">Welcome, {user?.username}!</h1>
@@ -56,24 +88,48 @@ const [topCategories, setTopCategories] = useState([]);
         {/* Charts */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div className="bg-white p-4 shadow rounded-xl">
-            <h2 className="text-lg font-semibold mb-2 text-center">Top 3 Categories</h2>
+            <h2 className="text-lg font-semibold mb-2 text-center">
+              Top 3 Income Categories
+            </h2>
             <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={topCategories}>
+              <BarChart data={topIncomeCategories}>
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
-                <Bar dataKey="total" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="total" fill="#10b981" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
 
-          {/* Add other charts if needed */}
-          <div className="bg-white p-4 shadow rounded-xl flex items-center justify-center text-gray-400">
-            Add chart here
+          <div className="bg-white p-4 shadow rounded-xl">
+            <h2 className="text-lg font-semibold mb-2 text-center">
+              Top 3 Expense Categories
+            </h2>
+            <ResponsiveContainer width="100%" height={200}>
+              <PieChart>
+                <Pie
+                  data={topExpenseCategories}
+                  dataKey="total"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  label
+                >
+                  {topExpenseCategories.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Transactions Table */}
+        {/* Recent Transactions Table */}
         <div className="bg-white shadow rounded-xl p-4">
           <h2 className="text-lg font-semibold mb-2">Recent Transactions</h2>
           <div className="overflow-y-auto max-h-[300px] border rounded">
@@ -88,17 +144,40 @@ const [topCategories, setTopCategories] = useState([]);
                 </tr>
               </thead>
               <tbody>
-                {transactions.map((tx) => (
-                  <tr key={tx._id} className="border-t">
-                    <td className="px-4 py-2">{new Date(tx.date).toLocaleDateString()}</td>
-                    <td className="px-4 py-2">{tx.description}</td>
-                    <td className="px-4 py-2">{tx.category?.name}</td>
-                    <td className="px-4 py-2 capitalize text-gray-600">{tx.type}</td>
-                    <td className={`px-4 py-2 font-semibold ${tx.type === 'income' ? 'text-green-600' : 'text-red-500'}`}>
-                      ${tx.amount}
+                {recentTransactions.length > 0 ? (
+                  recentTransactions.map((tx) => (
+                    <tr key={tx._id} className="border-t">
+                      <td className="px-4 py-2">
+                        {new Date(tx.date).toLocaleDateString()}
+                      </td>
+                      <td className="px-4 py-2">{tx.description}</td>
+                      <td className="px-4 py-2">
+                        {tx.category?.name || "Unknown"}
+                      </td>
+                      <td className="px-4 py-2 capitalize text-gray-600">
+                        {tx.type}
+                      </td>
+                      <td
+                        className={`px-4 py-2 font-semibold ${
+                          tx.type === "income"
+                            ? "text-green-600"
+                            : "text-red-500"
+                        }`}
+                      >
+                        ${tx.amount}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan="5"
+                      className="px-4 py-2 text-center text-gray-400"
+                    >
+                      No recent transactions found.
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
@@ -106,6 +185,5 @@ const [topCategories, setTopCategories] = useState([]);
       </div>
     </div>
   );
-
 };
 export default Dashboard;
