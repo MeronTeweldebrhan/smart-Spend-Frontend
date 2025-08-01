@@ -53,25 +53,16 @@ function TransactionList() {
 
   /// === Fetch categories for filtering === ///
   useEffect(() => {
-    console.log(
-      "useEffect for categories triggered. user:",
-      user,
-      "activeAccountId:",
-      activeAccountId
-    );
+   
     if (!user?._id || !activeAccountId) {
-      console.log("Skipping fetchCategories: missing user or activeAccountId");
       return;
     }
     const fetchCategories = async () => {
-      console.log("Fetching categories with payload:", {
-        accountId: activeAccountId,
-      });
+    
       try {
         const response = await backendClient.post("/category/all", {
           accountId: activeAccountId,
         });
-        console.log("Categories response:", response.data);
         setCategories(response.data);
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -81,10 +72,9 @@ function TransactionList() {
     fetchCategories();
   }, [user?._id, activeAccountId]);
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Transaction List</h2>
-
-      {/* === FILTER CONTROLS === */}
+    <div className="bg-white p-6">
+      <h3 className="text-lg font-semibold mb-3">Filters</h3>
+     {/* === FILTER CONTROLS === */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
         <select
           name="type"
@@ -166,15 +156,16 @@ function TransactionList() {
       </div>
 
       {/* Transaction Table */}
+      <h2 className="text-2xl font-bold mb-4 ms-2.5">Transaction List</h2>
       <div className="overflow-y-auto max-h-[300px] border rounded">
         <table className="min-w-full border rounded-lg bg-white shadow-sm">
           <thead className="bg-gray-100 text-sm text-gray-600">
             <tr>
               <th className="p-3 text-left">Date</th>
-              <th className="p-3 text-left">Type</th>
-              <th className="p-3 text-left">Category</th>
-              <th className="p-3 text-left">Amount</th>
               <th className="p-3 text-left">Description</th>
+              <th className="p-3 text-left">Category</th>
+              <th className="p-3 text-left">Type</th>
+              <th className="p-3 text-left">Amount</th>
               <th className="p-3 text-left">Action</th>
             </tr>
           </thead>
@@ -184,10 +175,10 @@ function TransactionList() {
                 <td className="p-3">
                   {new Date(tx.date).toLocaleDateString()}
                 </td>
-                <td className="p-3 capitalize">{tx.type}</td>
-                <td className="p-3">{tx.category?.name || "Uncategorized"}</td>
-                <td className="p-3">${tx.amount}</td>
                 <td className="p-3 truncate max-w-xs">{tx.description}</td>
+                <td className="p-3">{tx.category?.name || "Uncategorized"}</td>
+                <td className="p-3 capitalize">{tx.type}</td>
+                <td className="p-3">${tx.amount}</td>
                 <td className="p-3">
                   <button
                     onClick={() => navigate(`/transaction/${tx._id}`)}

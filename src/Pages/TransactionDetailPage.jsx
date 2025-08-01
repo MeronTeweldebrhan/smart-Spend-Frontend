@@ -1,4 +1,5 @@
-// src/Pages/TransactionDetailsPage.jsx
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import backendClient from "../Clients/backendClient";
@@ -12,6 +13,7 @@ function TransactionDetailsPage() {
   const [editing, setEditing] = useState(false);
   const [categories, setCategories] = useState([]);
 
+  ///===fetch trasnaction by id==///
   const fetchTx = async () => {
     try {
       const res = await backendClient.get(`/transaction/${id}`,{
@@ -49,7 +51,7 @@ function TransactionDetailsPage() {
         const response = await backendClient.post('/category/all',{
           accountId: activeAccountId,
         });
-         console.log("categories:",response.data)
+         
         setCategories(response.data);
        
       } catch (error) {
@@ -59,14 +61,20 @@ function TransactionDetailsPage() {
     };
     fetchCategories();
   }, [user, activeAccountId]);
+
   if (!tx) return <p>Loading...</p>;
 
+  //===handle Back btn===///
+ const handlebackbtn = () => {
+    navigate("/reports");
+  };
   return (
-    <div className="max-w-xl mx-auto mt-10 bg-white p-6 rounded shadow">
+    <div className="max-w-xl mx-auto mt-10 bg-gradient-to-br from-blue-100 to-blue-300 p-6 rounded shadow">
       <h2 className="text-xl font-semibold mb-4">Transaction Details</h2>
 
       {!editing ? (
         <>
+        
           <p>
             <strong>Amount:</strong> ${tx.amount}
           </p>
@@ -102,7 +110,7 @@ function TransactionDetailsPage() {
             >
               Export
             </button>
-            {/* Share can be a future feature (e.g., copy link, email) */}
+            <button className="bg-blue-600 text-white px-4 py-2 ms-50 rounded" onClick={handlebackbtn}> Back </button>
           </div>
         </>
       ) : (
@@ -155,7 +163,7 @@ function TransactionDetailsPage() {
             className="w-full border p-2"
             placeholder="Description"
           />
-          {/* Add dropdowns if needed */}
+          
           <div className="flex gap-2">
             <button
               type="submit"

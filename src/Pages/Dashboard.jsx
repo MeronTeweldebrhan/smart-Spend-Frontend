@@ -8,38 +8,30 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
 } from "recharts";
 import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
-  const { user, activeAccountId } = useAuth();
+  const { activeAccountId } = useAuth();
   const [transactions, setTransactions] = useState([]);
   const [topIncomeCategories, setTopIncomeCategories] = useState([]);
   const [topExpenseCategories, setTopExpenseCategories] = useState([]);
-  const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444"]; // Colors for PieChart
-const navigate = useNavigate();
+
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log(
-          "Fetching transactions with activeAccountId:",
-          activeAccountId
-        );
         const txRes = await backendClient.get("/transaction", {
           params: { limit: 3, accountId: activeAccountId },
         });
-        console.log(" response:", txRes.data);
         setTransactions(txRes.data);
 
-        // Calculate top Income categories
+        //===Calculate top Income categories===//
         const incomeTotals = {};
         txRes.data
           .filter((tx) => tx.type === "income")
           .forEach((tx) => {
-            const name = tx.category?.name || "Unknown";
+            const name = tx.category?.name || tx.category._id;
             incomeTotals[name] = (incomeTotals[name] || 0) + tx.amount;
           });
         const sortedIncome = Object.entries(incomeTotals)
@@ -48,12 +40,12 @@ const navigate = useNavigate();
           .slice(0, 9);
         setTopIncomeCategories(sortedIncome);
 
-        // Calculate top Expense categories
+        //====Calculate top Expense categories===////
         const expenseTotals = {};
         txRes.data
           .filter((tx) => tx.type === "expense")
           .forEach((tx) => {
-            const name = tx.category?.name || "Unknown";
+            const name = tx.category?.name || tx.category._id;
             expenseTotals[name] = (expenseTotals[name] || 0) + tx.amount;
           });
         const sortedExpense = Object.entries(expenseTotals)
@@ -70,28 +62,36 @@ const navigate = useNavigate();
     if (activeAccountId) fetchData();
   }, [activeAccountId]);
 
-  // Get the 3 most recent transactions
+  //==Get the 3 most recent transactions==//
   const recentTransactions = transactions
     .sort((a, b) => new Date(b.date) - new Date(a.date))
     .slice(0, 3);
-  return (
-    <div className="relative min-h-screen bg-white p-4">
-      {/* Subtle background */}
-      <div
-        className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/asfalt-dark.png')]
- opacity-10 pointer-events-none z-0"
-      ></div>
 
+  //==Handler for button click==//
+  const handleCreateTransaction = () => {
+    navigate("/transaction");
+  };
+  const handleCategorybtn = () => {
+    navigate("/category");
+  };
+  const handleReports = () => {
+    navigate("/reports");
+  };
+
+  return (
+    <div className="relative min-h-screen bg-gradient-to-br from-blue-100 to-blue-300 p-4">
       <div className="relative z-10 max-w-6xl mx-auto">
-        <h1 className="text-center">Welcome, {user?.username}!</h1>
+        <h1 className="font-semibold text-lg  text-center p-4 rounded ">
+          Dashboard
+        </h1>
 
         {/* Charts */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div className="bg-white p-4 shadow rounded-xl">
             <h2 className="text-lg font-semibold mb-2 text-center">
-              Top 3 Income Categories
+              Income Categories
             </h2>
-            <ResponsiveContainer width="100%" height={200}>
+            <ResponsiveContainer width="50%" height={200}>
               <BarChart data={topIncomeCategories}>
                 <XAxis dataKey="name" />
                 <YAxis />
@@ -103,33 +103,41 @@ const navigate = useNavigate();
 
           <div className="bg-white p-4 shadow rounded-xl">
             <h2 className="text-lg font-semibold mb-2 text-center">
-              Top 3 Expense Categories
+              Expense Categories
             </h2>
-            <ResponsiveContainer width="100%" height={200}>
-              <PieChart>
-                <Pie
-                  data={topExpenseCategories}
-                  dataKey="total"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={80}
-                  label
-                >
-                  {topExpenseCategories.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
-                </Pie>
+            <ResponsiveContainer width="50%" height={200}>
+              <BarChart data={topExpenseCategories}>
+                <XAxis dataKey="name" />
+                <YAxis />
                 <Tooltip />
-              </PieChart>
+                <Bar dataKey="total" fill="red" radius={[4, 4, 0, 0]} />
+              </BarChart>
             </ResponsiveContainer>
+          
           </div>
         </div>
-
-        {/* Recent Transactions Table */}
+        <div className="ms-50">
+          {/* Short cut buttons */}
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded ms-10 hover:bg-blue-700 hover:scale-105 focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200 transform"
+            onClick={handleCreateTransaction}
+          >
+            ➕Add Transaction
+          </button>
+          <button
+            className="bg-blue-500 text-white px-4 py-2 ms-10 rounded hover:bg-blue-700 hover:scale-105 focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200 transform"
+            onClick={handleReports}
+          >
+            Go To Reports
+          </button>
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded ms-10 mb-2.5 hover:bg-blue-700 hover:scale-105 focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200 transform"
+            onClick={handleCategorybtn}
+          >
+            Category Management
+          </button>
+        </div>
+       {/* Tabel  */}
         <div className="bg-white shadow rounded-xl p-4">
           <h2 className="text-lg font-semibold mb-2">Recent Transactions</h2>
           <div className="overflow-y-auto max-h-[300px] border rounded">
@@ -141,6 +149,7 @@ const navigate = useNavigate();
                   <th className="px-4 py-2 text-left">Category</th>
                   <th className="px-4 py-2 text-left">Type</th>
                   <th className="px-4 py-2 text-left">Amount</th>
+                  <th className="p-3 text-left">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -152,7 +161,7 @@ const navigate = useNavigate();
                       </td>
                       <td className="px-4 py-2">{tx.description}</td>
                       <td className="px-4 py-2">
-                        {tx.category?.name || "Unknown"}
+                        {tx.category?.name || "Uncategorized"}
                       </td>
                       <td className="px-4 py-2 capitalize text-gray-600">
                         {tx.type}
@@ -165,6 +174,14 @@ const navigate = useNavigate();
                         }`}
                       >
                         ${tx.amount}
+                      </td>
+                      <td className="p-3">
+                        <button
+                          onClick={() => navigate(`/transaction/${tx._id}`)}
+                          className="text-blue-600 hover:underline"
+                        >
+                          View
+                        </button>
                       </td>
                     </tr>
                   ))

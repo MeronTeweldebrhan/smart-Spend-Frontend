@@ -13,6 +13,7 @@ import Navbar from "./components/Navbar";
 import Footbar from "./components/Footbar";
 import NotFoundPage from "./Pages/NotFoundPage";
 import SettingsPage from "./Pages/SettingsPage";
+
 function App() {
   return (
     <>

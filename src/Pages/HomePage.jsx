@@ -5,22 +5,7 @@ function HomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 to-blue-300 flex flex-col items-center justify-center text-center px-4 relative">
-      {/* Top-right buttons */}
-      <div className="absolute top-4 right-4 space-x-2">
-        <button
-          onClick={() => navigate("/login")}
-          className="bg-white text-blue-600 border border-blue-600 px-4 py-2 rounded hover:bg-blue-50 transition"
-        >
-          Login
-        </button>
-        <button
-          onClick={() => navigate("/signup")}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-        >
-          Sign Up
-        </button>
-      </div>
-
+      
       {/* Main Content */}
       <h1 className="text-4xl md:text-5xl font-bold text-blue-800 mb-4">
         Welcome to <span className="text-blue-900">SmartSpend</span>

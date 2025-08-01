@@ -1,26 +1,26 @@
-import { useEffect, useState } from 'react';
-import backendClient from '../Clients/backendClient';
-import { useAuth } from '../Context/useAuth';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import backendClient from "../Clients/backendClient";
+import { useAuth } from "../Context/useAuth";
+import { useNavigate } from "react-router-dom";
 
 function CategoryPage() {
-  const { user,activeAccountId } = useAuth();
+  const { user, activeAccountId } = useAuth();
   const [categories, setCategories] = useState([]);
-const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
+
   ///== Fetch categories on mount ===///
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await backendClient.post('/category/all',{
+        const response = await backendClient.post("/category/all", {
           accountId: activeAccountId,
         });
-         console.log("categories:",response.data)
+        
         setCategories(response.data);
-       
       } catch (error) {
-        console.error('Error fetching categories:', error);
-        alert('Failed to load categories. Please try again.');
+        console.error("Error fetching categories:", error);
+        alert("Failed to load categories. Please try again.");
       }
     };
     fetchCategories();
@@ -32,32 +32,33 @@ const [searchTerm, setSearchTerm] = useState('');
       cat.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       cat.description?.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  
+
   return (
-    <div className="max-w-5xl mx-auto p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">Category Management</h1>
-        <button
-          onClick={() => navigate('/category/new')}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-        >
-          Create Category
-        </button>
+    <div className="relative min-h-screen bg-gradient-to-br from-blue-100 to-blue-300 p-4">
+      <div className="flex items-center justify-between mb-3">
+        <h1 className="text-3xl font-bold text-gray-800">
+          Category Management
+        </h1>
       </div>
 
-      <div className="mb-4">
+      <div className="mb-4 w-150">
         <input
           type="text"
           placeholder="Search categories..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full md:w-1/2 p-2 mb-4 border rounded"
+          className="bg-white md:w-1/2 p-2 mb-4 border rounded mt-5"
         />
       </div>
-
+      <button
+        onClick={() => navigate("/category/new")}
+        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded  mb-3 ms-310"
+      >
+        Create Category
+      </button>
       {filteredCategories.length > 0 ? (
-        <div className="overflow-x-auto">
-          <table className="min-w-full text-sm text-left border rounded-lg shadow">
+        <div className=" overflow-x-auto">
+          <table className="min-w-350 text-sm text-left border rounded-lg shadow bg-white">
             <thead className="bg-gray-100 text-gray-600 uppercase text-xs">
               <tr>
                 <th className="px-4 py-3">Name</th>
@@ -69,8 +70,12 @@ const [searchTerm, setSearchTerm] = useState('');
             <tbody>
               {filteredCategories.map((category) => (
                 <tr key={category._id} className="border-t hover:bg-gray-50">
-                  <td className="px-4 py-3 font-medium text-gray-900">{category.name}</td>
-                  <td className="px-4 py-3 text-gray-700">{category.description || 'N/A'}</td>
+                  <td className="px-4 py-3 font-medium text-gray-900">
+                    {category.name}
+                  </td>
+                  <td className="px-4 py-3 text-gray-700">
+                    {category.description || "N/A"}
+                  </td>
                   <td className="px-4 py-3 text-gray-500">
                     {new Date(category.createdAt).toLocaleDateString()}
                   </td>

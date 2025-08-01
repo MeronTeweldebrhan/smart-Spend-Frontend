@@ -6,7 +6,7 @@ function Navbar() {
   return (
     <nav className="bg-white shadow px-4 py-3 flex justify-between items-center">
       <NavLink to="/" className="text-xl font-bold text-blue-700">
-        SmartSpend
+        SmartSpend 
       </NavLink>
       <div className="flex gap-6 items-center">
         {activeAccountName && (
@@ -18,34 +18,35 @@ function Navbar() {
       <div className="space-x-4">
         {!user ? (
           <>
-            <NavLink to="/" className="text-blue-600">
+            <NavLink to="/" className={({ isActive }) => `text-blue-600 ${isActive ? 'underline' : ''}`}>
               Home
             </NavLink>
-            <NavLink to="/login" className="text-blue-600">
+            <NavLink to="/login" className={({ isActive }) => `text-blue-600 ${isActive ? 'underline' : ''}`}>
               Login
             </NavLink>
-            <NavLink to="/signup" className="text-blue-600">
+            <NavLink to="/signup"
+             className={({ isActive }) => `bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition ${isActive ? 'underline' : ''}`}>
               Signup
             </NavLink>
           </>
         ) : (
           <>
-            <NavLink to="/dashboard" className="text-blue-600">
+            <NavLink to="/dashboard" className={({ isActive }) => `text-blue-600 ${isActive ? 'underline' : ''}`}>
               Dashboard
             </NavLink>
-            <NavLink to="/transaction" className="text-blue-600">
+            <NavLink to="/transaction" className={({ isActive }) => `text-blue-600 ${isActive ? 'underline' : ''}`}>
               Transactions
             </NavLink>
-            <NavLink to="/reports" className="text-blue-600">
+            <NavLink to="/reports" className={({ isActive }) => `text-blue-600 ${isActive ? 'underline' : ''}`}>
               Reports
             </NavLink>
-            <NavLink to="/category" className="text-blue-600">
+            <NavLink to="/category" className={({ isActive }) => `text-blue-600 ${isActive ? 'underline' : ''}`}>
               Category
             </NavLink>
-            <NavLink to="/profile" className="text-blue-600">
+            <NavLink to="/profile" className={({ isActive }) => `text-blue-600 ${isActive ? 'underline' : ''}`}>
               Profile
             </NavLink>
-            <NavLink to="/settings" className="text-blue-600">
+            <NavLink to="/settings" className={({ isActive }) => `text-blue-600 ${isActive ? 'underline' : ''}`}>
               Settings
             </NavLink>
             <button onClick={logout} className="text-red-500">

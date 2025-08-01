@@ -1,47 +1,47 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import  backendClient  from "../Clients/backendClient.js";
+import backendClient from "../Clients/backendClient.js";
 import { useAuth } from "../Context/useAuth.js";
 
 function LoginPage() {
- const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
- const { login } = useAuth()
+  const { login } = useAuth();
+
+  ///===Handle input ====///
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
-    };
+    setErrorMessage("");
+  };
 
+  ///====Handle Login===///
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       const response = await backendClient.post("/users/login", formData);
-    //   const { token, user } = response.data;
+      login(response.data.token);
 
-    //   console.log("Login successful:", user);
-    //   console.log("Token:", token);
-
-        login(response.data.token);
-    
-        navigate("/dashboard");
-      
+      navigate("/dashboard");
     } catch (error) {
       console.error("Login error:", error);
-      alert("An error occurred during login.");
+      const msg = error.response?.data?.message || "Invalid email or password.";
+      setErrorMessage(msg);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center  relative  bg-gradient-to-br from-blue-100 to-blue-300 p-4">
       <form
         onSubmit={handleLogin}
-        className=""
+        className="bg-white p-6 rounded-lg shadow-md w-80 space-y-4"
       >
         <h2 className="text-2xl font-bold text-center text-gray-800">Login</h2>
 
@@ -62,7 +62,9 @@ function LoginPage() {
           className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
           required
         />
-
+        {errorMessage && (
+          <div className="text-red-600 text-sm text-center">{errorMessage}</div>
+        )}
         <button
           type="submit"
           className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-200"
@@ -72,6 +74,6 @@ function LoginPage() {
       </form>
     </div>
   );
-  }
+}
 
 export default LoginPage;

@@ -10,27 +10,16 @@ function TransactionForm() {
     { amount: "", type: "", date: "", category: "", description: "" },
   ]);
 
-  // Fetch categories
+  // Fetch all categories drop down===///
   useEffect(() => {
-    console.log(
-      "useEffect for categories triggered. user:",
-      user,
-      "activeAccountId:",
-      activeAccountId
-    );
     if (!user?._id || !activeAccountId) {
-      console.log("Skipping fetchCategories: missing user or activeAccountId");
       return;
     }
     const fetchCategories = async () => {
-      console.log("Fetching categories with payload:", {
-        accountId: activeAccountId,
-      });
       try {
         const response = await backendClient.post("/category/all", {
           accountId: activeAccountId,
         });
-        console.log("Categories response:", response.data);
         setCategories(response.data);
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -40,7 +29,7 @@ function TransactionForm() {
     fetchCategories();
   }, [user?._id, activeAccountId]);
 
-  // Handle changes per row
+  ///==Handle changes per row===///
   const handleChange = (index, e) => {
     const { name, value } = e.target;
     setTransactions((prev) => {
@@ -50,7 +39,7 @@ function TransactionForm() {
     });
   };
 
-  // Add another empty row
+  //==Add another empty row===//
   const addTransactionRow = () => {
     setTransactions((prev) => [
       ...prev,
@@ -58,15 +47,20 @@ function TransactionForm() {
     ]);
   };
 
-  // Submit all transactions
+  //==cancel row===//
+  const removeLastrow = () => {
+    setTransactions((prev) => prev.slice(0, -1));
+  };
+
+  //===Submit all transactions===///
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    ///===check if user loggen in==///
     if (!user || !user._id) {
       alert("User not found or not logged in.");
       return;
     }
-
     try {
       const payload = transactions.map((t) => ({
         ...t,
@@ -90,7 +84,7 @@ function TransactionForm() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto mt-6 p-4 border rounded-lg shadow">
+    <div className="bg-white max-w-4xl mx-auto mt-6 p-4 border rounded-lg shadow">
       <h2 className="text-xl font-semibold mb-4">Add Transactions</h2>
       <form onSubmit={handleSubmit}>
         <table className="w-full table-auto border-collapse mb-4">
@@ -180,7 +174,13 @@ function TransactionForm() {
           >
             + Add Row
           </button>
-
+          <button
+            type="button"
+            onClick={removeLastrow}
+            className="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300"
+          >
+            - Last Row
+          </button>
           <button
             type="submit"
             className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"

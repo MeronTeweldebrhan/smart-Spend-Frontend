@@ -1,4 +1,4 @@
-// src/Pages/CategoryDetailPage.jsx
+
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import backendClient from "../Clients/backendClient";
@@ -11,9 +11,9 @@ function CategoryDetailPage() {
   const isEditing = id !== "new";
   const [category, setCategory] = useState({ name: "", description: "" });
 
+  ///===Get category By Id===///
   useEffect(() => {
     if (!user || !isEditing) return;
-
     const fetchCategory = async () => {
       try {
         const res = await backendClient.get(`/category/${id}`);
@@ -28,11 +28,12 @@ function CategoryDetailPage() {
     fetchCategory();
   }, [user, id, isEditing, navigate]);
 
+///===Handle input chnages==///
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCategory((prev) => ({ ...prev, [name]: value }));
   };
-
+//===Handle Submit for both id edit or new creat===///
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -66,7 +67,7 @@ const handleDelete = async () => {
 };
 
   return (
-    <div className="max-w-xl mx-auto p-6">
+    <div className="max-w-xl mx-auto bg-gradient-to-br from-blue-100 to-blue-300 p-6 rounded shadow">
       <h2 className="text-2xl font-bold mb-4">{isEditing ? "Edit" : "Create"} Category</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
