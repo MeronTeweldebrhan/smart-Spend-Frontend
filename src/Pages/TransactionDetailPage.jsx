@@ -31,9 +31,17 @@ function TransactionDetailsPage() {
 
   ///==Handle delete===///
   const handleDelete = async () => {
-    if (!window.confirm("Are you sure you want to delete this?")) return;
-    await backendClient.delete(`/transaction/${id}`);
+    try {
+      if (!window.confirm("Are you sure you want to delete this?")) return;
+    await backendClient.delete(`/transaction/${id}`,{
+      params: { accountId: activeAccountId },
+    });
     navigate("/reports");
+    } catch (error) {
+       console.error("Delete error:", error);
+    alert("Failed to delete transaction. Please try again.");
+    }
+    
   };
   ///==Handle update===///
   const handleUpdate = async (e) => {

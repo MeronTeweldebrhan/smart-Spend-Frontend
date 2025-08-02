@@ -18,6 +18,7 @@ const Dashboard = () => {
   const [topExpenseCategories, setTopExpenseCategories] = useState([]);
 
   const navigate = useNavigate();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -31,7 +32,7 @@ const Dashboard = () => {
         txRes.data
           .filter((tx) => tx.type === "income")
           .forEach((tx) => {
-            const name = tx.category?.name || tx.category._id;
+            const name = tx?.category?.name || "Uncategorized";
             incomeTotals[name] = (incomeTotals[name] || 0) + tx.amount;
           });
         const sortedIncome = Object.entries(incomeTotals)
@@ -45,7 +46,7 @@ const Dashboard = () => {
         txRes.data
           .filter((tx) => tx.type === "expense")
           .forEach((tx) => {
-            const name = tx.category?.name || tx.category._id;
+            const name = tx?.category?.name || "Uncategorized";
             expenseTotals[name] = (expenseTotals[name] || 0) + tx.amount;
           });
         const sortedExpense = Object.entries(expenseTotals)
@@ -60,7 +61,7 @@ const Dashboard = () => {
     };
 
     if (activeAccountId) fetchData();
-  }, [activeAccountId]);
+  }, [activeAccountId,navigate]);
 
   //==Get the 3 most recent transactions==//
   const recentTransactions = transactions
@@ -91,9 +92,9 @@ const Dashboard = () => {
             <h2 className="text-lg font-semibold mb-2 text-center">
               Income Categories
             </h2>
-            <ResponsiveContainer width="50%" height={200}>
+            <ResponsiveContainer width="100%" height={300}>
               <BarChart data={topIncomeCategories}>
-                <XAxis dataKey="name" />
+                <XAxis dataKey="name" angle={-10} textAnchor="end" interval={0} />
                 <YAxis />
                 <Tooltip />
                 <Bar dataKey="total" fill="#10b981" radius={[4, 4, 0, 0]} />
@@ -105,15 +106,14 @@ const Dashboard = () => {
             <h2 className="text-lg font-semibold mb-2 text-center">
               Expense Categories
             </h2>
-            <ResponsiveContainer width="50%" height={200}>
+            <ResponsiveContainer width="100%" height={300}>
               <BarChart data={topExpenseCategories}>
-                <XAxis dataKey="name" />
+                <XAxis dataKey="name" angle={-10} textAnchor="end" interval={0} />
                 <YAxis />
                 <Tooltip />
                 <Bar dataKey="total" fill="red" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
-          
           </div>
         </div>
         <div className="ms-50">
@@ -137,7 +137,7 @@ const Dashboard = () => {
             Category Management
           </button>
         </div>
-       {/* Tabel  */}
+        {/* Tabel  */}
         <div className="bg-white shadow rounded-xl p-4">
           <h2 className="text-lg font-semibold mb-2">Recent Transactions</h2>
           <div className="overflow-y-auto max-h-[300px] border rounded">
