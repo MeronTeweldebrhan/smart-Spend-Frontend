@@ -13,6 +13,7 @@ import Navbar from "./components/Navbar";
 import Footbar from "./components/Footbar";
 import NotFoundPage from "./Pages/NotFoundPage";
 import SettingsPage from "./Pages/SettingsPage";
+import AccountDetailPage from "./Pages/AccountDetailPage";
 
 function App() {
   return (
@@ -80,6 +81,7 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route path="/account/:id" element={<PrivateRoute> <AccountDetailPage/></PrivateRoute>}/>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Footbar />
