@@ -5,16 +5,20 @@ function Navbar() {
   const { user, logout, activeAccountName } = useAuth();
   return (
     <nav className="bg-white shadow px-4 py-3 flex justify-between items-center">
+
+      {/* Logo of the app  */}
       <NavLink to="/" className="text-xl font-bold text-blue-700">
         SmartSpend 
       </NavLink>
-      <div className="flex gap-6 items-center">
+      {/* Name of current active account */}
+      <NavLink to="/settings" className="flex gap-6 items-center">
         {activeAccountName && (
           <span className="ms-3 text-sm text-blue-500">
              {activeAccountName}
           </span>
         )}
-      </div>
+      </NavLink>
+      {/* home page  */}
       <div className="space-x-4">
         {!user ? (
           <>
@@ -31,6 +35,8 @@ function Navbar() {
           </>
         ) : (
           <>
+          {activeAccountName ?(
+          <>
             <NavLink to="/dashboard" className={({ isActive }) => `text-blue-600 ${isActive ? 'underline' : ''}`}>
               Dashboard
             </NavLink>
@@ -43,9 +49,8 @@ function Navbar() {
             <NavLink to="/category" className={({ isActive }) => `text-blue-600 ${isActive ? 'underline' : ''}`}>
               Category
             </NavLink>
-            <NavLink to="/profile" className={({ isActive }) => `text-blue-600 ${isActive ? 'underline' : ''}`}>
-              Profile
-            </NavLink>
+            </>
+            ):null}
             <NavLink to="/settings" className={({ isActive }) => `text-blue-600 ${isActive ? 'underline' : ''}`}>
               Settings
             </NavLink>

@@ -6,7 +6,7 @@ function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 to-blue-300 flex flex-col items-center justify-center text-center px-4 relative">
       
-      {/* Main Content */}
+      
       <h1 className="text-4xl md:text-5xl font-bold text-blue-800 mb-4">
         Welcome to <span className="text-blue-900">SmartSpend</span>
       </h1>
@@ -14,7 +14,7 @@ function HomePage() {
         Take control of your finances with ease. Track, save, and grow — all in one place.
       </p>
 
-      {/* Optional CTA below */}
+      
       <div className="mt-8">
         <button
           onClick={() => navigate("/signup")}

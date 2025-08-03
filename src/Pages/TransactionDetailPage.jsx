@@ -116,7 +116,7 @@ function TransactionDetailsPage() {
               onClick={() => window.print()}
               className="bg-gray-500 text-white px-4 py-2 rounded"
             >
-              Export
+              📤Export
             </button>
             <button className="bg-blue-600 text-white px-4 py-2 ms-50 rounded" onClick={handlebackbtn}> Back </button>
           </div>

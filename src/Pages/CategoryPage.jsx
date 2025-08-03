@@ -20,7 +20,7 @@ function CategoryPage() {
         setCategories(response.data);
       } catch (error) {
         console.error("Error fetching categories:", error);
-        alert("Failed to load categories. Please try again.");
+        
       }
     };
     fetchCategories();
@@ -52,7 +52,7 @@ function CategoryPage() {
       </div>
       <button
         onClick={() => navigate("/category/new")}
-        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded  mb-3 ms-310"
+        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded  mb-3 "
       >
         Create Category
       </button>

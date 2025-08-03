@@ -2,9 +2,11 @@
 import { useState, useEffect } from "react";
 import backendClient from "../Clients/backendClient.js";
 import { useAuth } from "../Context/useAuth.js";
+import { useNavigate } from "react-router-dom";
 
 function TransactionForm() {
   const { user, activeAccountId } = useAuth();
+  const navigate=useNavigate()
   const [categories, setCategories] = useState([]);
   const [transactions, setTransactions] = useState([
     { amount: "", type: "", date: "", category: "", description: "" },
@@ -23,7 +25,7 @@ function TransactionForm() {
         setCategories(response.data);
       } catch (error) {
         console.error("Error fetching categories:", error);
-        alert("Failed to load categories. Please try again.");
+        
       }
     };
     fetchCategories();
@@ -67,13 +69,13 @@ function TransactionForm() {
         userId: user._id,
         accountId: activeAccountId,
       }));
-      console.log("Submitting payload:", payload);
+      
 
       for (const tx of payload) {
         await backendClient.post("/transaction", tx);
       }
 
-      alert("All transactions submitted successfully.");
+      alert("Transaction successfully created.");
       setTransactions([
         { amount: "", type: "", date: "", category: "", description: "" },
       ]);
@@ -186,6 +188,14 @@ function TransactionForm() {
             className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
           >
             Save Transactions
+          </button>
+
+          <button
+            onClick={() => navigate(`/importTransactions`)}
+            type="submit"
+            className="bg-gray-500 text-white px-4 py-2 rounded ms-70" 
+          >
+            📥Import
           </button>
         </div>
       </form>

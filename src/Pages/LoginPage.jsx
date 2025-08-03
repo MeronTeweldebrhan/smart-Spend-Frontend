@@ -29,7 +29,7 @@ function LoginPage() {
       const response = await backendClient.post("/users/login", formData);
       login(response.data.token);
 
-      navigate("/dashboard");
+      navigate("/settings");
     } catch (error) {
       console.error("Login error:", error);
       const msg = error.response?.data?.message || "Invalid email or password.";

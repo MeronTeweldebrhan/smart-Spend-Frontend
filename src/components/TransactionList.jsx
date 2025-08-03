@@ -199,32 +199,6 @@ function TransactionList() {
           </tbody>
         </table>
       </div>
-
-      {/* {selectedTx && (
-        <div className="mt-6 p-4 border rounded bg-gray-50">
-          <h3 className="text-lg font-semibold mb-2">Transaction Details</h3>
-          <p><strong>Amount:</strong> ${selectedTx.amount}</p>
-          <p><strong>Type:</strong> {selectedTx.type}</p>
-          <p><strong>Date:</strong> {new Date(selectedTx.date).toLocaleDateString()}</p>
-          <p><strong>Category:</strong> {selectedTx.category?.name || "Uncategorized"}</p>
-          <p><strong>Description:</strong> {selectedTx.description}</p>
-
-          <div className="mt-4 flex gap-2">
-            <button
-              onClick={() => handleDelete(selectedTx._id)}
-              className="px-4 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-            >
-              Delete
-            </button>
-            <button
-              onClick={() => setSelectedTx(null)}
-              className="px-4 py-1 border rounded hover:bg-gray-200"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )} */}
     </div>
   );
 }
