@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+
 import { useState, useEffect } from "react";
 import backendClient from "../Clients/backendClient.js";
 import { useAuth } from "../Context/useAuth.js";

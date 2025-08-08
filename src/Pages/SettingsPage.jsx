@@ -8,7 +8,6 @@ const SettingsPage = () => {
   const [accounts, setAccounts] = useState([]);
   const navigate = useNavigate();
 
-  // Fetch accounts owned or shared with user===///
   const fetchAccounts = async () => {
     try {
       const response = await backendClient.get("/accounts");
@@ -18,72 +17,64 @@ const SettingsPage = () => {
       alert("Failed to load accounts. Please try again.");
     }
   };
- 
+
   useEffect(() => {
     if (user) fetchAccounts();
   }, [user]);
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-blue-100 to-blue-300 p-4">
-      <h1 className="text-2xl font-bold mb-6">Settings</h1>
+    <div className="relative min-h-screen bg-gradient-to-br from-blue-50 to-blue-200 p-6">
+      <h1 className="text-3xl font-bold text-blue-800 mb-8">Settings</h1>
 
       {!activeAccountId && (
-        <>
-          <h1 className="text-center">Welcome, {user?.username}!</h1>
-          <h2 className="text-xl text-center text-red-600 font-semibold">
-            Please select an account to continue
-          </h2>
-        </>
+        <div className="mb-8 text-center">
+          <h2 className="text-xl font-semibold text-gray-700">Welcome, {user?.username}!</h2>
+          <p className="text-red-600 font-medium mt-2">Please select an account to continue.</p>
+        </div>
       )}
-      
-       <button
-        onClick={() => navigate("/account/new")}
-        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded  mb-10"
-      >
-        Create Account
-      </button>
+
+      <div className="mb-10">
+        <button
+          onClick={() => navigate("/account/new")}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow"
+        >
+          + Create Account
+        </button>
+      </div>
+
       <div>
-        <h2 className="text-xl font-semibold mb-2"> Accounts</h2>
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Your Accounts</h2>
         {accounts.length === 0 ? (
-          <p>No accounts yet.</p>
+          <p className="text-gray-600">No accounts yet.</p>
         ) : (
-          <div className="overflow-x-auto bg-white rounded-lg shadow w-150">
-            <table className="w-150 divide-y divide-gray-200">
-              <thead className="bg-gray-100">
+          <div className="overflow-x-auto rounded-lg shadow border border-gray-200 bg-white">
+            <table className="min-w-full text-sm text-left">
+              <thead className="bg-gray-100 border-b border-gray-200">
                 <tr>
-                  <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                    Name
-                  </th>
-                  <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                    Type
-                  </th>
-                  <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                    Owner
-                  </th>
-                  <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                    Actions
-                  </th>
+                  <th className="px-4 py-3 font-medium text-gray-700">Name</th>
+                  <th className="px-4 py-3 font-medium text-gray-700">Type</th>
+                  <th className="px-4 py-3 font-medium text-gray-700">Owner</th>
+                  <th className="px-4 py-3 font-medium text-gray-700">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y divide-gray-100">
                 {accounts.map((acc) => (
-                  <tr key={acc._id} className="hover:bg-gray-50">
-                    <td className="px-2 py-1 font-medium">{acc.name}</td>
-                    <td className="px-2 py-2 capitalize">{acc.type}</td>
-                    <td className="px-2 py-2">
+                  <tr key={acc._id} className="hover:bg-gray-50 transition">
+                    <td className="px-4 py-2 font-medium text-gray-900">{acc.name}</td>
+                    <td className="px-4 py-2 capitalize text-gray-700">{acc.type}</td>
+                    <td className="px-4 py-2 text-gray-700">
                       {acc.owner?.username || "Loading..."}
                     </td>
-                    <td className="px-2 py-2 flex gap-2 flex-wrap">
+                    <td className="px-4 py-2 flex flex-wrap gap-2">
                       <button
                         onClick={() => switchAccount(acc._id, acc.name)}
-                        className="text-white bg-green-600 px-2 py-1 rounded hover:bg-green-700 text-sm"
+                        className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-xs shadow"
                       >
                         Select
                       </button>
-                     
                       <button
                         onClick={() => navigate(`/account/${acc._id}`)}
-                        className="text-blue-600 hover:underline text-sm"
+                        className="text-blue-600 hover:underline text-xs"
                       >
                         View
                       </button>
