@@ -66,7 +66,7 @@ function TransactionList() {
         setCategories(response.data);
       } catch (error) {
         console.error("Error fetching categories:", error);
-        alert("Failed to load categories. Please try again.");
+        // alert("Failed to load categories. Please try again.");
       }
     };
     fetchCategories();

@@ -1,8 +1,10 @@
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../Context/useAuth";
+import { usePermissions } from "../hooks/usePermissions";
 
 function Navbar() {
   const { user, logout, activeAccountName } = useAuth();
+  const {hasPermission }=usePermissions()
   return (
     <nav className="bg-white shadow px-4 py-3 flex justify-between items-center">
 
@@ -35,25 +37,61 @@ function Navbar() {
           </>
         ) : (
           <>
-          {activeAccountName ?(
-          <>
-            <NavLink to="/dashboard" className={({ isActive }) => `text-blue-600 ${isActive ? 'underline' : ''}`}>
-              Dashboard
-            </NavLink>
-            <NavLink to="/transaction" className={({ isActive }) => `text-blue-600 ${isActive ? 'underline' : ''}`}>
-              Transactions
-            </NavLink>
-            <NavLink to="/reports" className={({ isActive }) => `text-blue-600 ${isActive ? 'underline' : ''}`}>
-              Reports
-            </NavLink>
-            <NavLink to="/category" className={({ isActive }) => `text-blue-600 ${isActive ? 'underline' : ''}`}>
-              Category
-            </NavLink>
-            </>
-            ):null}
-            <NavLink to="/settings" className={({ isActive }) => `text-blue-600 ${isActive ? 'underline' : ''}`}>
-              Settings
-            </NavLink>
+    {activeAccountName ? (
+              <>
+                {/* Conditionally render links based on permissions */}
+                {hasPermission("dashboard") && (
+                  <NavLink
+                    to="/dashboard"
+                    className={({ isActive }) =>
+                      `text-blue-600 ${isActive ? "underline" : ""}`
+                    }
+                  >
+                    Dashboard
+                  </NavLink>
+                )}
+                {hasPermission("transactions") && (
+                  <NavLink
+                    to="/transaction"
+                    className={({ isActive }) =>
+                      `text-blue-600 ${isActive ? "underline" : ""}`
+                    }
+                  >
+                    Transactions
+                  </NavLink>
+                )}
+                {hasPermission("reports") && (
+                  <NavLink
+                    to="/reports"
+                    className={({ isActive }) =>
+                      `text-blue-600 ${isActive ? "underline" : ""}`
+                    }
+                  >
+                    Reports
+                  </NavLink>
+                )}
+                {hasPermission("categories") && (
+                  <NavLink
+                    to="/category"
+                    className={({ isActive }) =>
+                      `text-blue-600 ${isActive ? "underline" : ""}`
+                    }
+                  >
+                    Category
+                  </NavLink>
+                )}
+              </>
+            ) : null}
+            {hasPermission("settings") && (
+              <NavLink
+                to="/settings"
+                className={({ isActive }) =>
+                  `text-blue-600 ${isActive ? "underline" : ""}`
+                }
+              >
+                Settings
+              </NavLink>
+            )}
             <button onClick={logout} className="text-red-500">
               Logout
             </button>
