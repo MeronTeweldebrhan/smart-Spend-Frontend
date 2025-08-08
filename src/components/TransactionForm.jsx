@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import backendClient from "../Clients/backendClient.js";
 import { useAuth } from "../Context/useAuth.js";
 import { useNavigate } from "react-router-dom";
-
+import { toast } from "react-toastify";
 function TransactionForm() {
   const { user, activeAccountId } = useAuth();
   const navigate=useNavigate()
@@ -60,7 +60,7 @@ function TransactionForm() {
 
     ///===check if user loggen in==///
     if (!user || !user._id) {
-      alert("User not found or not logged in.");
+      toast.error("User not found or not logged in.");
       return;
     }
     try {
@@ -75,13 +75,13 @@ function TransactionForm() {
         await backendClient.post("/transaction", tx);
       }
 
-      alert("Transaction successfully created.");
+      toast.success("Transaction successfully created.");
       setTransactions([
         { amount: "", type: "", date: "", category: "", description: "" },
       ]);
     } catch (error) {
       console.error("Error submitting transactions:", error);
-      alert("Failed to submit. Please try again.");
+      toast.error("Failed to submit. Please try again.");
     }
   };
 

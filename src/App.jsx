@@ -14,11 +14,13 @@ import Footbar from "./components/Footbar";
 import NotFoundPage from "./Pages/NotFoundPage";
 import SettingsPage from "./Pages/SettingsPage";
 import AccountDetailPage from "./Pages/AccountDetailPage";
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function App() {
   return (
     <>
       <Navbar />
+       <ToastContainer position="top-right" autoClose={3000} />
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/Signup" element={<SignupPage />} />

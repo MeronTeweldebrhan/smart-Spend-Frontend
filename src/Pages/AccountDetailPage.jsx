@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import backendClient from "../Clients/backendClient.js";
 import { useAuth } from "../Context/useAuth.js";
 import EmployeeManagement from "../components/EmployeeManagement";
-
+import { toast } from "react-toastify";
 function AccountDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ function AccountDetailPage() {
       });
     } catch (err) {
       console.error("Failed to load account:", err);
-      alert("Account not found.");
+      toast.error("Account not found.");
       navigate("/settings");
     } finally {
       setLoading(false);
@@ -49,15 +49,15 @@ function AccountDetailPage() {
     try {
       if (isEditing) {
         await backendClient.put(`/accounts/${id}`, account);
-        alert("Account updated");
+        toast.success("Account updated");
       } else {
         await backendClient.post("/accounts", account);
-        alert("Account created");
+        toast.success("Account created");
       }
       navigate("/settings");
     } catch (error) {
       console.error("Save failed:", error);
-      alert("Failed to save account.");
+      toast.error("Failed to save account.");
     }
   };
 
@@ -65,7 +65,7 @@ function AccountDetailPage() {
     if (window.confirm("Are you sure you want to delete this account?")) {
       try {
         await backendClient.delete(`/accounts/${id}`);
-        alert("Account deleted successfully");
+        toast.success("Account deleted successfully");
         navigate("/settings");
       } catch (error) {
         console.error("Error deleting account:", error);

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import backendClient from "../Clients/backendClient";
 import { useAuth } from "../Context/useAuth";
-
+import { toast } from "react-toastify";
 function TransactionDetailsPage() {
   const { id } = useParams();
   const { user,activeAccountId } = useAuth();
@@ -39,7 +39,7 @@ function TransactionDetailsPage() {
     navigate("/reports");
     } catch (error) {
        console.error("Delete error:", error);
-    alert("Failed to delete transaction. Please try again.");
+    toast.error("Failed to delete transaction. Please try again.");
     }
     
   };
@@ -64,7 +64,7 @@ function TransactionDetailsPage() {
        
       } catch (error) {
         console.error('Error fetching categories:', error);
-        alert('Failed to load categories. Please try again.');
+        toast.error('Failed to load categories. Please try again.');
       }
     };
     fetchCategories();

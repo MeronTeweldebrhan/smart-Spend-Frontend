@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import backendClient from "../Clients/backendClient";
 import { useAuth } from "../Context/useAuth";
-
+import { toast } from "react-toastify";
 function CategoryDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ function CategoryDetailPage() {
         setCategory(res.data);
       } catch (err) {
         console.error("Failed to load category:", err);
-        alert("Category not found.");
+        toast.error("Category not found.");
         navigate("/category");
       }
     };
@@ -39,17 +39,17 @@ function CategoryDetailPage() {
     try {
       if (isEditing) {
         await backendClient.put(`/category/${id}`, category);
-        alert("Category updated");
+        toast.success("Category updated");
       } else {
         await backendClient.post("/category",{ ...category,
           accountId: activeAccountId,
         });
-        alert("Category created");
+        toast.success("Category created");
       }
       navigate("/category");
     } catch (error) {
       console.error("Save failed:", error);
-      alert("Failed to save category.");
+      toast.error("Failed to save category.");
     }
   };
 ///===handle delete===///
@@ -57,11 +57,11 @@ const handleDelete = async () => {
   if (window.confirm("Are you sure you want to delete this category?")) {
     try {
       await backendClient.delete(`/category/${id}`);
-      alert("Category deleted successfully");
+      toast.success("Category deleted successfully");
       navigate('/category');
     } catch (error) {
       console.error("Error deleting category:", error);
-      alert("Failed to delete category.");
+      toast.error("Failed to delete category.");
     }
   }
 };

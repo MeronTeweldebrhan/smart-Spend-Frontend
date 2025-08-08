@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import backendClient from "../Clients/backendClient";
 import { useAuth } from "../Context/useAuth.js";
-
+import { toast } from "react-toastify";
 function SignupPage() {
   const [formData, setFormData] = useState({
     username: "",
@@ -27,7 +27,7 @@ function SignupPage() {
     e.preventDefault();
     try {
       const response = await backendClient.post("/users/register", formData);
-      alert("Signup successful! Please login.");
+      toast.success("Signup successful! Please login.");
       const { token } = response.data;
       login(token);
       navigate("/login");

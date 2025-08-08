@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import backendClient from "../Clients/backendClient.js";
 import { useAuth } from "../Context/useAuth.js";
 import { useNavigate } from "react-router-dom";
-
+import { toast } from "react-toastify";
 function TransactionList() {
   const { user, activeAccountId } = useAuth();
   const navigate = useNavigate();
@@ -39,7 +39,7 @@ function TransactionList() {
       setTransactions(response.data);
     } catch (error) {
       console.error("Error fetching transactions:", error);
-      alert("Failed to load transactions. Please try again.");
+      toast.error("Failed to load transactions. Please try again.");
     }
   };
   ///==refetch transactions when filters change and // Debounce for 500ms ===///

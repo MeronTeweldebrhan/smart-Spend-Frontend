@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import backendClient from "../Clients/backendClient.js";
 import { useAuth } from "../Context/useAuth.js";
 import { useNavigate } from "react-router-dom";
-
+import { toast } from "react-toastify";
 const SettingsPage = () => {
   const { user, activeAccountId, switchAccount } = useAuth();
   const [accounts, setAccounts] = useState([]);
@@ -14,7 +14,7 @@ const SettingsPage = () => {
       setAccounts(response.data);
     } catch (error) {
       console.error("Error fetching accounts:", error);
-      alert("Failed to load accounts. Please try again.");
+      toast.error("Failed to load accounts. Please try again.");
     }
   };
 

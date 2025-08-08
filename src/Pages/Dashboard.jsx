@@ -10,7 +10,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useNavigate } from "react-router-dom";
-
+import { toast } from "react-toastify";
 const Dashboard = () => {
   const { activeAccountId } = useAuth();
   const [transactions, setTransactions] = useState([]);
@@ -56,7 +56,7 @@ const Dashboard = () => {
         setTopExpenseCategories(sortedExpense);
       } catch (err) {
         console.error("Error loading dashboard data:", err);
-        alert("Failed to load dashboard data. Please try again.");
+        toast.error("Failed to load dashboard data. Please try again.");
       }
     };
 

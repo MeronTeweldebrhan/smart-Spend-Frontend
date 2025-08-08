@@ -9,7 +9,6 @@ function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef();
 
-  // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -21,10 +20,10 @@ function Navbar() {
   }, []);
 
   return (
-    <nav className="bg-white shadow px-6 py-3 flex justify-between items-center">
+    <nav className="bg-white shadow px-6 py-3 flex justify-between items-center w-full">
       {/* Left: Logo + Links */}
       <div className="flex items-center gap-6">
-        <NavLink to="/" className="text-xl font-bold text-blue-700">
+        <NavLink to="/" className="text-2xl font-bold text-blue-700">
           SmartSpend
         </NavLink>
 
@@ -45,7 +44,9 @@ function Navbar() {
                       to="/settings"
                       className={({ isActive }) =>
                         `block px-4 py-2 text-sm ${
-                          isActive ? "bg-blue-100 text-blue-700" : "text-gray-700"
+                          isActive
+                            ? "bg-blue-100 text-blue-700"
+                            : "text-gray-700"
                         } hover:bg-gray-100`
                       }
                       onClick={() => setDropdownOpen(false)}
@@ -61,7 +62,7 @@ function Navbar() {
               <NavLink
                 to="/dashboard"
                 className={({ isActive }) =>
-                  `text-blue-600 ${isActive ? "underline" : ""}`
+                  `text-blue-600 font-medium ${isActive ? "underline" : ""}`
                 }
               >
                 Dashboard
@@ -71,7 +72,7 @@ function Navbar() {
               <NavLink
                 to="/transaction"
                 className={({ isActive }) =>
-                  `text-blue-600 ${isActive ? "underline" : ""}`
+                  `text-blue-600 font-medium ${isActive ? "underline" : ""}`
                 }
               >
                 Transactions
@@ -81,7 +82,7 @@ function Navbar() {
               <NavLink
                 to="/reports"
                 className={({ isActive }) =>
-                  `text-blue-600 ${isActive ? "underline" : ""}`
+                  `text-blue-600 font-medium ${isActive ? "underline" : ""}`
                 }
               >
                 Reports
@@ -91,7 +92,7 @@ function Navbar() {
               <NavLink
                 to="/category"
                 className={({ isActive }) =>
-                  `text-blue-600 ${isActive ? "underline" : ""}`
+                  `text-blue-600 font-medium ${isActive ? "underline" : ""}`
                 }
               >
                 Category
@@ -101,15 +102,24 @@ function Navbar() {
         )}
       </div>
 
-      {/* Right: Account name + Logout or Login/Signup */}
+      {/* Center: Active Account */}
+      {user && activeAccountName && (
+        <div className="text-center text-blue-500 font-semibold text-sm">
+          Account: <span className="italic">{activeAccountName}</span>
+        </div>
+      )}
+
+      {/* Right: Auth Info */}
       <div className="flex items-center gap-4">
         {user ? (
           <>
-            {activeAccountName && (
-              <span className="text-sm text-blue-500">{activeAccountName}  user:{user?.username}</span>
-               
-            )}
-            <button onClick={logout} className="text-red-500 hover:underline text-sm">
+            <span className="text-sm text-gray-600 font-medium">
+              User: <span className="text-blue-600">{user?.username}</span>
+            </span>
+            <button
+              onClick={logout}
+              className="text-red-500 hover:underline text-sm font-medium"
+            >
               Logout
             </button>
           </>
@@ -118,7 +128,9 @@ function Navbar() {
             <NavLink
               to="/login"
               className={({ isActive }) =>
-                `text-blue-600 text-sm ${isActive ? "underline" : ""}`
+                `text-blue-600 text-sm font-medium ${
+                  isActive ? "underline" : ""
+                }`
               }
             >
               Login
@@ -126,7 +138,7 @@ function Navbar() {
             <NavLink
               to="/signup"
               className={({ isActive }) =>
-                `bg-blue-600 text-white px-4 py-1.5 rounded hover:bg-blue-700 transition text-sm ${
+                `bg-blue-600 text-white px-4 py-1.5 rounded hover:bg-blue-700 transition text-sm font-medium ${
                   isActive ? "underline" : ""
                 }`
               }
