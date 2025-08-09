@@ -16,8 +16,10 @@ import SettingsPage from "./Pages/SettingsPage";
 import AccountDetailPage from "./Pages/AccountDetailPage";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import JournalEntryPage from "./Pages/JournalEntryPage";
-import ChartAccountsPage from "./Pages/ChartofAccountsPage";
+import JournalEntryPage from "./Pages/JournalEntrys/JournalEntryPage";
+import ChartAccountsPage from "./Pages/chartofAccounts/ChartofAccountsPage";
+import ChartOfAccountDetailPage from "./Pages/chartofAccounts/chartofAccountsDetailPage";
+import JournalEntryDetailPage from "./Pages/JournalEntrys/JournalEntryDetailPage";
 function App() {
   return (
     <>
@@ -29,6 +31,14 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
 
         {/*  Only logged-in users can see this */}
+
+        <Route 
+        path="/chartofaccounts/:id" 
+        element={<PrivateRoute><ChartOfAccountDetailPage/></PrivateRoute>}/>
+        <Route 
+        path="/journal/:id" 
+        element={<PrivateRoute><JournalEntryDetailPage/></PrivateRoute>}/>
+        
         <Route 
         path="/chartofAccounts" 
         element={<PrivateRoute><ChartAccountsPage/></PrivateRoute>}/>

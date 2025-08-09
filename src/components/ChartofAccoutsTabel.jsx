@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import backendClient from "../Clients/backendClient.js";
 import { useAuth } from "../Context/useAuth.js";
-
+import { useNavigate } from "react-router-dom";
 export default function ChartofAccountTable() {
   const [accounts, setAccounts] = useState([]);
-  const { activeAccountId } = useAuth(); // <--- Get activeAccountId from the context
-
+  const { activeAccountId } = useAuth(); 
+const navigate = useNavigate();
   useEffect(() => {
     const fetchAccounts = async () => {
       if (!activeAccountId) {
-        // Prevent API call if there's no active account ID
-        setAccounts([]); // Clear accounts if there's no active account
+        
+        setAccounts([]); 
         return;
       }
       try {
@@ -24,7 +24,7 @@ export default function ChartofAccountTable() {
     };
 
     fetchAccounts();
-  }, [activeAccountId]); // <--- Dependency on activeAccountId from context
+  }, [activeAccountId]); 
 
   return (
     <div>
@@ -36,6 +36,7 @@ export default function ChartofAccountTable() {
             <th className="border px-2 py-1">Name</th>
             <th className="border px-2 py-1">Type</th>
             <th className="border px-2 py-1">Description</th>
+            <th className="border px-2 py-1">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -45,6 +46,14 @@ export default function ChartofAccountTable() {
               <td className="border px-2 py-1">{acc.name}</td>
               <td className="border px-2 py-1">{acc.type}</td>
               <td className="border px-2 py-1">{acc.description}</td>
+              <td className="border px-2 py-1">
+                  <button
+                    onClick={() => navigate(`/chartofaccounts/${acc._id}`)}
+                    className="text-blue-600 hover:underline"
+                  >
+                    View
+                  </button>
+                </td>
             </tr>
           ))}
           {accounts.length === 0 && (

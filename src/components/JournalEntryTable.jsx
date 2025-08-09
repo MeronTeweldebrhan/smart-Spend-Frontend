@@ -1,5 +1,6 @@
-
+import { useNavigate } from "react-router-dom";
 function JournalEntryTable({ entries = [] }) {
+  const navigate =useNavigate()
   return (
     <table className="w-350 mt-6 border">
       <thead>
@@ -10,6 +11,7 @@ function JournalEntryTable({ entries = [] }) {
           <th className="border p-2">Account</th>
           <th className="border p-2">Debit</th>
           <th className="border p-2">Credit</th>
+          <th className="border p-2">Action</th>
         </tr>
       </thead>
       <tbody>
@@ -53,6 +55,14 @@ function JournalEntryTable({ entries = [] }) {
                 <td className="border p-2">
                   {line.type === 'credit' ? `$${line.amount.toFixed(2)}` : '-'}
                 </td>
+                <td className="border p-2">
+                  <button
+                    onClick={() => navigate(`/journal/${entry._id}`)}
+                    className="text-blue-600 hover:underline"
+                  >
+                    View
+                  </button>
+                  </td>
               </tr>
             ))
           )

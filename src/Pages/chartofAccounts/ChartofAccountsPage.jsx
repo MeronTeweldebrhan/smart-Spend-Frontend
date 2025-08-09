@@ -1,7 +1,7 @@
 
-import ChartofAccountsForm from "../components/ChartofAcoountForm";
-import { useAuth } from "../Context/useAuth.js";
-import ChartofAccountTable from "../components/ChartofAccoutsTabel.jsx";
+import ChartofAccountsForm from "../../components/ChartofAcoountForm.jsx";
+import { useAuth } from "../../Context/useAuth.js";
+import ChartofAccountTable from "../../components/ChartofAccoutsTabel.jsx";
 function ChartAccountsPage(){
  const { activeAccountId } = useAuth();
     return(

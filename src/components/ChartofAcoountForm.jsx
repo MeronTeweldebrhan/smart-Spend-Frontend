@@ -6,10 +6,10 @@ export default function ChartofAccountsForm() {
   const [formData, setFormData] = useState({
     name: "",
     type: "",
-    code: "",
+    // You can remove `code` from the initial state as it's no longer needed in the form
     description: "",
   });
-const { activeAccountId } = useAuth();
+  const { activeAccountId } = useAuth();
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
@@ -32,14 +32,13 @@ const { activeAccountId } = useAuth();
     try {
       await backendClient.post("/chartofaccounts", {
         ...formData,
-        accountId: activeAccountId // ✅ send active account ID
+        accountId: activeAccountId,
       });
 
       // Reset form
       setFormData({
         name: "",
         type: "",
-        code: "",
         description: "",
       });
     } catch (err) {
@@ -75,14 +74,6 @@ const { activeAccountId } = useAuth();
           <option value="Income">Income</option>
           <option value="Expense">Expense</option>
         </select>
-        <input
-          type="text"
-          name="code"
-          placeholder="Code"
-          value={formData.code}
-          onChange={handleChange}
-          className="border p-2 w-full"
-        />
         <textarea
           name="description"
           placeholder="Description"
@@ -90,7 +81,6 @@ const { activeAccountId } = useAuth();
           onChange={handleChange}
           className="border p-2 w-full"
         />
-
         <button
           type="submit"
           className="bg-blue-600 text-white px-4 py-2 rounded"

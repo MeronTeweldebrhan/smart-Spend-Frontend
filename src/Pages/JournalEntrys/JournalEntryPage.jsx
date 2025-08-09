@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import backendClient from "../Clients/backendClient.js";
-import { useAuth } from "../Context/useAuth.js";
+import backendClient from "../../Clients/backendClient.js";
+import { useAuth } from "../../Context/useAuth.js";
 import { toast } from "react-toastify";
-import JournalEntryTable from "../components/JournalEntryTable.jsx";
-import JournalEntryForm from "../components/JournalEntryForm.jsx";
+import JournalEntryTable from "../../components/JournalEntryTable.jsx";
+import JournalEntryForm from "../../components/JournalEntryForm.jsx";
 
 export default function JournalEntryPage() {
   const { activeAccountId } = useAuth();
