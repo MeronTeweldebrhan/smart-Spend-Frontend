@@ -1,1 +1,20 @@
 @import "tailwindcss";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .input {
+    @apply w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring focus:ring-blue-200;
+  }
+  .btn-primary {
+    @apply bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700;
+  }
+  .btn-secondary {
+    @apply bg-gray-200 text-gray-700 px-3 py-1 rounded hover:bg-gray-300;
+  }
+  .btn-danger {
+    @apply bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600;
+  }
+}

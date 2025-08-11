@@ -5,12 +5,17 @@ import { AuthContext } from "../Context/AuthContext";
 export const usePermissions = () => {
     const { user, activeAccountId, accounts } = useContext(AuthContext);
 
-    const hasPermission = (permissionKey) => {
-        if (!user || !activeAccountId|| !accounts) return false;
+    const hasPermission = (permissionKey, requiredType = null) => {
+        if (!user || !activeAccountId || !accounts) return false;
 
         // Find the active account from the list
         const activeAccount = accounts.find(acc => acc._id === activeAccountId);
         if (!activeAccount) return false;
+
+        // NEW: Check if the account type matches the required type
+        if (requiredType && activeAccount.type !== requiredType) {
+            return false;
+        }
 
         // Check if the current user is the owner
         if (activeAccount.owner._id === user._id) {
@@ -25,7 +30,7 @@ export const usePermissions = () => {
         if (employeeEntry) {
             return employeeEntry.permissions[permissionKey];
         }
-        
+
         return false;
     };
 

@@ -8,94 +8,94 @@ function JournalEntryForm({ chartAccounts, loadingAccounts, onSuccess }) {
 
   const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
-  const [lines, setLines] = useState([
-    { account: "", type: "debit", amount: "" },
-  ]);
-  //===Handle changes per line and field==//
+  const [lines, setLines] = useState([{ account: "", debit: "", credit: "" }]);
+
   const handleChange = (index, e) => {
     const { name, value } = e.target;
     setLines((prev) => {
       const updated = [...prev];
       updated[index][name] = value;
+
+      // Enforce only one of debit or credit is filled per line:
+      if (name === "debit" && value) updated[index].credit = "";
+      if (name === "credit" && value) updated[index].debit = "";
+
       return updated;
     });
   };
 
-  // Add new empty line
   const addLine = () => {
-    setLines((prev) => [...prev, { account: "", type: "debit", amount: "" }]);
+    setLines((prev) => [...prev, { account: "", debit: "", credit: "" }]);
   };
 
-  // Remove last line
   const removeLastLine = () => {
     setLines((prev) => prev.slice(0, -1));
   };
 
-  // Submit handler
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (lines.length < 2) {
-    toast.error("At least two lines (accounts) are required.");
-    return;
-  }
-
-  // Validate that there's exactly one debit and one credit
-  const debitLines = lines.filter((line) => line.type === "debit");
-  const creditLines = lines.filter((line) => line.type === "credit");
-
-  if (debitLines.length !== 1 || creditLines.length !== 1) {
-    toast.error("Exactly one debit line and one credit line are required.");
-    return;
-  }
-
-  // Validate amounts are numbers and > 0
-  for (const line of lines) {
-    if (!line.account) {
-      toast.error("Please select an account for all lines.");
+    if (lines.length < 2) {
+      toast.error("At least two lines (accounts) are required.");
       return;
     }
-    if (!line.amount || parseFloat(line.amount) <= 0) {
-      toast.error("Amounts must be positive numbers.");
+
+    // Validate each line has account and exactly one debit or credit amount > 0
+    for (const line of lines) {
+      if (!line.account) {
+        toast.error("Please select an account for all lines.");
+        return;
+      }
+      const debitNum = parseFloat(line.debit);
+      const creditNum = parseFloat(line.credit);
+
+      if (
+        (isNaN(debitNum) || debitNum < 0) ||
+        (isNaN(creditNum) || creditNum < 0)
+      ) {
+        toast.error("Amounts must be valid non-negative numbers.");
+        return;
+      }
+      if (!((debitNum > 0 && creditNum === 0) || (creditNum > 0 && debitNum === 0))) {
+        toast.error("Each line must have either debit or credit amount (not both).");
+        return;
+      }
+    }
+
+    // Sum debit and credit totals
+    const totalDebit = lines.reduce((sum, l) => sum + (parseFloat(l.debit) || 0), 0);
+    const totalCredit = lines.reduce((sum, l) => sum + (parseFloat(l.credit) || 0), 0);
+
+    if (totalDebit !== totalCredit) {
+      toast.error("Total debit and credit amounts must be equal.");
       return;
     }
-  }
 
-  // Check debit amount equals credit amount
-  const debitAmount = parseFloat(debitLines[0].amount);
-  const creditAmount = parseFloat(creditLines[0].amount);
+    try {
+      const payload = {
+        date,
+        description,
+        accountId: activeAccountId,
+        lines: lines.map((line) => ({
+          account: line.account,
+          debit: Number(line.debit) || 0,
+          credit: Number(line.credit) || 0,
+        })),
+      };
 
-  if (debitAmount !== creditAmount) {
-    toast.error("Debit and Credit amounts must be equal.");
-    return;
-  }
+      const response = await backendClient.post("/journals", payload);
+      toast.success("Journal entry saved successfully!");
+      if (onSuccess) onSuccess(response.data);
 
-  try {
-    const payload = {
-      date,
-      description,
-      accountId: activeAccountId,
-      lines: lines.map((line) => ({
-        account: line.account,
-        type: line.type,
-        amount: parseFloat(line.amount),
-      })),
-    };
-
-    const response = await backendClient.post("/journals", payload);
-    toast.success("Journal entry saved successfully!");
-    if (onSuccess) onSuccess(response.data);
-
-    // Reset form
-    setDate("");
-    setDescription("");
-    setLines([{ account: "", type: "debit", amount: "" }]);
-  } catch (error) {
-    console.error("Error creating journal entry:", error);
-    toast.error("Failed to save journal entry.");
-  }
-};
-
+      // Reset form
+      setDate("");
+      setDescription("");
+      setLines([{ account: "", debit: "", credit: "" }]);
+    } catch (error) {
+      console.error("Error creating journal entry:", error);
+      toast.error("Failed to save journal entry.");
+    }
+  };
 
   return (
     <div className="bg-white max-w-4xl mx-auto mt-6 p-4 border rounded-lg shadow">
@@ -122,8 +122,8 @@ function JournalEntryForm({ chartAccounts, loadingAccounts, onSuccess }) {
           <thead>
             <tr className="bg-gray-100 text-left">
               <th className="p-2 border">Account</th>
-              <th className="p-2 border">Type</th>
-              <th className="p-2 border">Amount</th>
+              <th className="p-2 border">Debit</th>
+              <th className="p-2 border">Credit</th>
             </tr>
           </thead>
           <tbody>
@@ -139,9 +139,7 @@ function JournalEntryForm({ chartAccounts, loadingAccounts, onSuccess }) {
                     disabled={loadingAccounts}
                   >
                     <option value="">
-                      {loadingAccounts
-                        ? "Loading accounts..."
-                        : "-- Select Account --"}
+                      {loadingAccounts ? "Loading accounts..." : "-- Select Account --"}
                     </option>
                     {chartAccounts.map((acc) => (
                       <option key={acc._id} value={acc._id}>
@@ -151,28 +149,27 @@ function JournalEntryForm({ chartAccounts, loadingAccounts, onSuccess }) {
                   </select>
                 </td>
                 <td className="p-2 border">
-                  <select
-                    name="type"
-                    value={line.type}
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    name="debit"
+                    value={line.debit}
                     onChange={(e) => handleChange(index, e)}
                     className="w-full px-2 py-1 border rounded"
-                    required
-                  >
-                    <option value="debit">Debit</option>
-                    <option value="credit">Credit</option>
-                  </select>
+                    placeholder="0.00"
+                  />
                 </td>
                 <td className="p-2 border">
                   <input
                     type="number"
-                    min="0.01"
+                    min="0"
                     step="0.01"
-                    name="amount"
-                    value={line.amount}
+                    name="credit"
+                    value={line.credit}
                     onChange={(e) => handleChange(index, e)}
                     className="w-full px-2 py-1 border rounded"
-                    placeholder="Amount"
-                    required
+                    placeholder="0.00"
                   />
                 </td>
               </tr>

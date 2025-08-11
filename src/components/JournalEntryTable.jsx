@@ -1,8 +1,10 @@
 import { useNavigate } from "react-router-dom";
+
 function JournalEntryTable({ entries = [] }) {
-  const navigate =useNavigate()
+  const navigate = useNavigate();
+
   return (
-    <table className="w-350 mt-6 border">
+    <table className="w-full mt-6 border">
       <thead>
         <tr className="bg-gray-200">
           <th className="border p-2">Date</th>
@@ -17,7 +19,7 @@ function JournalEntryTable({ entries = [] }) {
       <tbody>
         {entries.length === 0 ? (
           <tr>
-            <td colSpan="6" className="border p-4 text-center text-gray-500">
+            <td colSpan="7" className="border p-4 text-center text-gray-500">
               No journal entries found.
             </td>
           </tr>
@@ -27,34 +29,18 @@ function JournalEntryTable({ entries = [] }) {
               <tr key={`${entry._id}-${lineIndex}`} className="text-sm">
                 {lineIndex === 0 && (
                   <>
-                    <td
-                      className="border p-2 align-top"
-                      rowSpan={entry.lines.length}
-                    >
+                    <td className="border p-2 align-top" rowSpan={entry.lines.length}>
                       {new Date(entry.date).toLocaleDateString()}
                     </td>
-                    <td
-                      className="border p-2 align-top"
-                      rowSpan={entry.lines.length}
-                    >
+                    <td className="border p-2 align-top" rowSpan={entry.lines.length}>
                       {entry.description}
                     </td>
                   </>
                 )}
-                {/* Code column */}
-                <td className="border p-2">
-                  {line.account?.code || 'N/A'}
-                </td>
-                {/* Account name column */}
-                <td className="border p-2">
-                  {line.account?.name || 'N/A'}
-                </td>
-                <td className="border p-2">
-                  {line.type === 'debit' ? `$${line.amount.toFixed(2)}` : '-'}
-                </td>
-                <td className="border p-2">
-                  {line.type === 'credit' ? `$${line.amount.toFixed(2)}` : '-'}
-                </td>
+                <td className="border p-2">{line.account?.code || "N/A"}</td>
+                <td className="border p-2">{line.account?.name || "N/A"}</td>
+                <td className="border p-2">{line.debit > 0 ? `$${line.debit.toFixed(2)}` : "-"}</td>
+                <td className="border p-2">{line.credit > 0 ? `$${line.credit.toFixed(2)}` : "-"}</td>
                 <td className="border p-2">
                   <button
                     onClick={() => navigate(`/journal/${entry._id}`)}
@@ -62,7 +48,7 @@ function JournalEntryTable({ entries = [] }) {
                   >
                     View
                   </button>
-                  </td>
+                </td>
               </tr>
             ))
           )

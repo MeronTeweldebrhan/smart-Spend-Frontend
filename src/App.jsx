@@ -20,31 +20,39 @@ import JournalEntryPage from "./Pages/JournalEntrys/JournalEntryPage";
 import ChartAccountsPage from "./Pages/chartofAccounts/ChartofAccountsPage";
 import ChartOfAccountDetailPage from "./Pages/chartofAccounts/chartofAccountsDetailPage";
 import JournalEntryDetailPage from "./Pages/JournalEntrys/JournalEntryDetailPage";
+import HotelRoomsPage from "./Pages/HotelPages/HotelRoomsPage";
+import ReservationsPage from "./Pages/HotelPages/ReservationPage";
+import HotelFrontDesk from "./Pages/HotelPages/HotelFrontDesk";
+import RoomStatusPage from "./Pages/HotelPages/RoomStatusPage";
+
 function App() {
   return (
     <>
       <Navbar />
-       <ToastContainer position="top-right" autoClose={3000} />
+      <ToastContainer position="top-right" autoClose={3000} />
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/Signup" element={<SignupPage />} />
         <Route path="/login" element={<LoginPage />} />
 
         {/*  Only logged-in users can see this */}
+        <Route path="/RoomStatusPage" element={<PrivateRoute><RoomStatusPage /></PrivateRoute>} />
+        <Route path="/HotelFrontDesk" element={<PrivateRoute><HotelFrontDesk /></PrivateRoute>} />
+        <Route path="/reservation" element={<PrivateRoute><ReservationsPage /></PrivateRoute>} />
+        <Route path="/Roomsmanagment" element={<PrivateRoute><HotelRoomsPage /></PrivateRoute>} />
+        <Route
+          path="/chartofaccounts/:id"
+          element={<PrivateRoute><ChartOfAccountDetailPage /></PrivateRoute>} />
+        <Route
+          path="/journal/:id"
+          element={<PrivateRoute><JournalEntryDetailPage /></PrivateRoute>} />
 
-        <Route 
-        path="/chartofaccounts/:id" 
-        element={<PrivateRoute><ChartOfAccountDetailPage/></PrivateRoute>}/>
-        <Route 
-        path="/journal/:id" 
-        element={<PrivateRoute><JournalEntryDetailPage/></PrivateRoute>}/>
-        
-        <Route 
-        path="/chartofAccounts" 
-        element={<PrivateRoute><ChartAccountsPage/></PrivateRoute>}/>
-        <Route 
-        path="/journal" 
-        element={<PrivateRoute><JournalEntryPage/></PrivateRoute>}/>
+        <Route
+          path="/chartofAccounts"
+          element={<PrivateRoute><ChartAccountsPage /></PrivateRoute>} />
+        <Route
+          path="/journal"
+          element={<PrivateRoute><JournalEntryPage /></PrivateRoute>} />
         <Route
           path="/category/:id"
           element={
@@ -101,7 +109,7 @@ function App() {
             </PrivateRoute>
           }
         />
-        <Route path="/account/:id" element={<PrivateRoute> <AccountDetailPage/></PrivateRoute>}/>
+        <Route path="/account/:id" element={<PrivateRoute> <AccountDetailPage /></PrivateRoute>} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Footbar />
