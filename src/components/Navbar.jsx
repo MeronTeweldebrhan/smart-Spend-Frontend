@@ -8,8 +8,10 @@ function Navbar() {
   const { hasPermission } = usePermissions();
   const [filesDropdownOpen, setFilesDropdownOpen] = useState(false);
   const [frontDeskDropdownOpen, setFrontDeskDropdownOpen] = useState(false);
+  const [reportsDropdownOpen, setReportsDropdownOpen] = useState(false);
   const filesDropdownRef = useRef(null);
   const frontDeskDropdownRef = useRef(null);
+  const reportsDropdownRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -51,12 +53,21 @@ function Navbar() {
         { label: "Rooms Management", to: "/Roomsmanagment", permission: "roomManagement" },
       ],
     },
+    {
+      label: "Reports ▾",
+      ref: reportsDropdownRef,
+      state: reportsDropdownOpen,
+      toggle: () => setReportsDropdownOpen((p) => !p),
+      // requiredType: "personal", // whole dropdown only shows for personal accounts
+      items: [
+        { label: "Reports", to: "/reports", permission: "reports" },
+      ],
+    },
   ];
 
   const singleLinks = [
     { label: "Dashboard", to: "/dashboard", permission: "dashboard" },
     { label: "Transactions", to: "/transaction", permission: "transactions" },
-    { label: "Reports", to: "/reports", permission: "reports" },
     { label: "Category", to: "/category", permission: "categories" },
   ];
 

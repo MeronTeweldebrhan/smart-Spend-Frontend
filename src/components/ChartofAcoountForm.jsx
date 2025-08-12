@@ -71,7 +71,7 @@ export default function ChartofAccountsForm() {
           <option value="Asset">Asset</option>
           <option value="Liability">Liability</option>
           <option value="Equity">Equity</option>
-          <option value="Income">Income</option>
+          <option value="Revenue">Revenue</option>
           <option value="Expense">Expense</option>
         </select>
         <textarea

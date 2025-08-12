@@ -64,18 +64,20 @@ function ChartOfAccountDetailPage() {
     }
   };
 
-  const handleDelete = async () => {
-    if (window.confirm("Are you sure you want to delete this chart of account?")) {
-      try {
-        await backendClient.delete(`/chartofaccounts/${id}`);
-        toast.success("Chart of account deleted successfully");
-        navigate("/chartofaccounts");
-      } catch (error) {
-        console.error("Error deleting chart of account:", error);
-        toast.error("Failed to delete chart of account.");
-      }
+const handleDelete = async () => {
+  if (window.confirm("Are you sure you want to delete this chart of account?")) {
+    try {
+      await backendClient.delete(`/chartofaccounts/${id}`);
+      toast.success("Chart of account deleted successfully");
+      navigate("/chartofaccounts");
+    } catch (error) {
+      console.error("Error deleting chart of account:", error);
+      const errMsg = error.response?.data?.message || "Failed to delete chart of account.";
+      toast.error(errMsg);
     }
-  };
+  }
+};
+
 
   return (
     <div className="max-w-xl mx-auto bg-gradient-to-br from-green-100 to-green-300 p-6 rounded shadow">
