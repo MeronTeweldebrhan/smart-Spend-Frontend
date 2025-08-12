@@ -46,8 +46,9 @@ function JournalEntryForm({ chartAccounts, loadingAccounts, onSuccess }) {
         toast.error("Please select an account for all lines.");
         return;
       }
-      const debitNum = parseFloat(line.debit);
-      const creditNum = parseFloat(line.credit);
+      //Parse debit and credit values, treating empty strings as 0
+      const debitNum = line.debit === ""? 0 : parseFloat(line.debit);
+      const creditNum = line.credit === "" ? 0 :parseFloat(line.credit);
 
       if (
         (isNaN(debitNum) || debitNum < 0) ||
