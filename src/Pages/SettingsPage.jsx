@@ -23,7 +23,7 @@ const SettingsPage = () => {
   }, [user]);
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-blue-50 to-blue-200 p-6">
+    <div className="relative min-h-screen bg-gradient-to-br from-blue-50 to-blue-200 p-6 mt-15">
       <h1 className="text-3xl font-bold text-blue-800 mb-8">Settings</h1>
 
       {!activeAccountId && (
