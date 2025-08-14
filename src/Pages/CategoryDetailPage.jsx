@@ -67,7 +67,7 @@ const handleDelete = async () => {
 };
 
   return (
-    <div className="max-w-xl mx-auto bg-gradient-to-br from-blue-100 to-blue-300 p-6 rounded shadow">
+    <div className="max-w-xl mx-auto bg-gradient-to-br from-blue-100 to-blue-300 p-6 rounded shadow mt-20">
       <h2 className="text-2xl font-bold mb-4">{isEditing ? "Edit" : "Create"} Category</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>

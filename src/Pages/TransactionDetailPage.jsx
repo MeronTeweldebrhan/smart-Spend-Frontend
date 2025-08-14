@@ -77,7 +77,7 @@ function TransactionDetailsPage() {
     navigate("/reports");
   };
   return (
-    <div className="max-w-xl mx-auto mt-10 bg-gradient-to-br from-blue-100 to-blue-300 p-6 rounded shadow">
+    <div className="max-w-xl mx-auto bg-gradient-to-br from-blue-100 to-blue-300 p-6 rounded shadow mt-20">
       <h2 className="text-xl font-semibold mb-4">Transaction Details</h2>
 
       {!editing ? (
