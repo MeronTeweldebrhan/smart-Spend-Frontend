@@ -1,3 +1,5 @@
+
+
 const statusColors = {
   Available: "bg-green-500",
   Booked: "bg-yellow-500",
@@ -5,9 +7,11 @@ const statusColors = {
   Maintenance: "bg-gray-400",
 };
 
-export default function RoomStatusCard({ room }) {
+export default function RoomStatusCard({ room, onCardClick }) {
+  
   return (
-    <div className="relative p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-transform transform hover:scale-105">
+    <div   onClick={() => onCardClick(room)}
+    className="relative p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-transform transform hover:scale-105">
       <div
         className={`absolute top-4 right-4 px-3 py-1 rounded-full text-white font-semibold text-sm ${
           statusColors[room.status] || "bg-gray-300"
@@ -23,7 +27,7 @@ export default function RoomStatusCard({ room }) {
         Rate: <span className="font-medium">${room.rate?.toFixed(2) || "0.00"}</span> / night
       </p>
       <p className="text-gray-700 mb-1">
-        Guest: <span className="font-medium">{room.guestName || "None"}</span>
+        Guest Name : <span className="font-medium">{room.guestName || "None"}</span>
       </p>
       <p className="text-gray-700">
         Check-in:{" "}
@@ -32,6 +36,12 @@ export default function RoomStatusCard({ room }) {
         </span>
       </p>
       <p className="text-gray-700">
+        Check-out:{" "}
+        <span className="font-medium">
+          {room.checkOutDate ? new Date(room.checkOutDate).toLocaleDateString() : "-"}
+        </span>
+      </p>
+       <p className="text-gray-700">
         Check-out:{" "}
         <span className="font-medium">
           {room.checkOutDate ? new Date(room.checkOutDate).toLocaleDateString() : "-"}

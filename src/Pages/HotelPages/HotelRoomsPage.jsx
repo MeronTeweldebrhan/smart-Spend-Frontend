@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import backendClient from "../../Clients/backendClient.js";
 import { useAuth } from "../../Context/useAuth.js";
@@ -47,7 +48,14 @@ export default function HotelRoomsPage() {
             fetchRooms(); // Refresh the list after an action
         } catch (error) {
             console.error("Error saving room:", error);
-            toast.error("Failed to save room. Check your input and try again.");
+            // Check if the error is a 409 Conflict from your server
+        if (error.response && error.response.status === 409) {
+            // Display the specific error message from the server response
+            toast.error(error.response.data.message);
+        } else {
+            // Display a generic error message for other errors
+            toast.error("An unexpected error occurred. Please try again.");
+        }
         }
     };
 

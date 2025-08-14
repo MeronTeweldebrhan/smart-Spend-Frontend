@@ -1,4 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+// src/pages/frontdesk/ReservationsPage.jsx
+
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import backendClient from "../../Clients/backendClient.js";
 import { useAuth } from "../../Context/useAuth.js";
 import { toast } from "react-toastify";
@@ -9,6 +13,7 @@ import { useRoomsUpdate } from "../../Context/RoomsUpdateContext.jsx";
 export default function ReservationsPage() {
   const { activeAccountId } = useAuth();
   const { setRoomsVersion } = useRoomsUpdate();
+  const navigate = useNavigate();
 
   const [reservations, setReservations] = useState([]);
   const [availableRooms, setAvailableRooms] = useState([]);
@@ -19,6 +24,7 @@ export default function ReservationsPage() {
     checkOutDate: "",
   });
   const [editingId, setEditingId] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchReservations = async () => {
     if (!activeAccountId) return;
@@ -27,7 +33,7 @@ export default function ReservationsPage() {
         params: { account: activeAccountId },
       });
       setReservations(Array.isArray(data) ? data : []);
-    } catch (error) {
+    } catch {
       toast.error("Failed to load reservations");
       setReservations([]);
     }
@@ -37,22 +43,29 @@ export default function ReservationsPage() {
     if (!activeAccountId) return;
     try {
       const { data } = await backendClient.get(`/hotel/rooms/${activeAccountId}`);
-      const available = data.filter((room) => room.status === "Available");
+      const available = data.filter(
+        (room) => room.status === "Available" || room._id === formData.room
+      );
       setAvailableRooms(available);
     } catch {
-      // handle error silently
+      // silently ignore
     }
   };
 
   useEffect(() => {
     fetchReservations();
-    fetchAvailableRooms();
   }, [activeAccountId]);
+
+  useEffect(() => {
+     if (isModalOpen && activeAccountId) {
+    fetchAvailableRooms();
+  }
+  }, [isModalOpen, activeAccountId, formData.room]);
 
   const refreshData = () => {
     fetchReservations();
     fetchAvailableRooms();
-    setRoomsVersion((v) => v + 1); // notify room status page
+    setRoomsVersion((v) => v + 1);
   };
 
   const handleSubmit = async (e) => {
@@ -71,12 +84,29 @@ export default function ReservationsPage() {
         });
         toast.success("Reservation created successfully!");
       }
-      setFormData({ guestName: "", room: "", checkInDate: "", checkOutDate: "" });
+      setFormData({
+        guestName: "",
+        room: "",
+        checkInDate: "",
+        checkOutDate: "",
+      });
       setEditingId(null);
+      setIsModalOpen(false);
       refreshData();
-    } catch {
-      toast.error("Failed to save reservation. Check your input and try again.");
+    } catch (error) {
+      toast.error("Failed to save reservation. Please check your input and try again.",error);
     }
+  };
+
+  const handleEdit = (reservation) => {
+    setEditingId(reservation._id);
+    setFormData({
+      guestName: reservation.guestName,
+      room: reservation.room?._id,
+      checkInDate: reservation.checkInDate.split("T")[0],
+      checkOutDate: reservation.checkOutDate.split("T")[0],
+    });
+    setIsModalOpen(true);
   };
 
   const handleCheckIn = async (id) => {
@@ -84,6 +114,7 @@ export default function ReservationsPage() {
       await backendClient.patch(`/hotel/reservations/${id}/checkin`);
       toast.success("Guest checked in successfully!");
       refreshData();
+      navigate("/RoomStatusPage");
     } catch {
       toast.error("Failed to check in guest.");
     }
@@ -113,18 +144,53 @@ export default function ReservationsPage() {
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <h1 className="text-3xl font-extrabold text-gray-900 mb-6">Reservations</h1>
-      <CreateReservationForm
-        formData={formData}
-        setFormData={setFormData}
-        handleSubmit={handleSubmit}
-        editingId={editingId}
-        availableRooms={availableRooms}
-      />
+
+      {/* Button to open modal */}
+      <button
+        onClick={() => setIsModalOpen(true)}
+        className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-lg"
+      >
+        + Add Reservation
+      </button>
+
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-opacity-40 flex justify-center items-center z-50">
+          <div className="bg-white rounded-xl shadow-lg max-w-lg w-full p-4 relative">
+            <button
+              onClick={() => {
+                setIsModalOpen(false);
+                setEditingId(null);
+                setFormData({
+                  guestName: "",
+                  room: "",
+                  checkInDate: "",
+                  checkOutDate: "",
+                });
+              }}
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+            >
+              ✖
+            </button>
+
+            <CreateReservationForm
+              formData={formData}
+              setFormData={setFormData}
+              handleSubmit={handleSubmit}
+              editingId={editingId}
+              availableRooms={availableRooms}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Reservation list table */}
       <ReservationListTable
         reservations={reservations}
         handleCheckIn={handleCheckIn}
         handleCheckOut={handleCheckOut}
         handleDelete={handleDelete}
+        handleEdit={handleEdit}
       />
     </div>
   );
