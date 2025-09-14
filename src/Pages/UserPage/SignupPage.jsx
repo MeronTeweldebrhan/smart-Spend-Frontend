@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import backendClient from "../Clients/backendClient";
-import { useAuth } from "../Context/useAuth.js";
+import backendClient from "../../Clients/backendClient";
+import { useAuth } from "../../Context/useAuth.js";
 import { toast } from "react-toastify";
 function SignupPage() {
   const [formData, setFormData] = useState({

@@ -1,102 +1,41 @@
-import { useEffect, useState } from "react";
-import backendClient from "../Clients/backendClient";
-import { useAuth } from "../Context/useAuth";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import CategoryTable from "../components/Inventory/CategoryTable.jsx";
+import { useAuth } from "../Context/useAuth.js";
 
-function CategoryPage() {
-  const { user, activeAccountId } = useAuth();
-  const [categories, setCategories] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+export default function CategoriesPage() {
+  const { activeAccountId } = useAuth();
+  const [refreshKey, setRefreshKey] = useState(0);
   const navigate = useNavigate();
 
-  ///== Fetch categories on mount ===///
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await backendClient.post("/category/all", {
-          accountId: activeAccountId,
-        });
-        
-        setCategories(response.data);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-        
-      }
-    };
-    fetchCategories();
-  }, [user, activeAccountId]);
+  const handleNewCategory = () => {
+    navigate("/category/new");
+  };
 
-  //== Handle search functionality  ===///
-  const filteredCategories = categories.filter(
-    (cat) =>
-      cat.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      cat.description?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleEditCategory = (category) => {
+    navigate(`/category/${category._id}`);
+  };
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-blue-100 to-blue-300 p-4">
-      <div className="flex items-center justify-between mb-3">
-        <h1 className="text-3xl font-bold text-gray-800">
-          Category Management
-        </h1>
+    <div className="max-w-5xl mx-auto mt-20 px-4 sm:px-6 lg:px-8 ">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-semibold text-gray-900">Categories</h1>
+        {activeAccountId && (
+          <button
+            onClick={handleNewCategory}
+            className="bg-blue-600 text-white px-5 py-2.5 rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+          >
+            New Category
+          </button>
+        )}
       </div>
 
-      <div className="mb-4 w-150">
-        <input
-          type="text"
-          placeholder="Search categories..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="bg-white md:w-1/2 p-2 mb-4 border rounded mt-5"
+      {activeAccountId && (
+        <CategoryTable
+          refreshKey={refreshKey}
+          onEditCategory={handleEditCategory}
         />
-      </div>
-      <button
-        onClick={() => navigate("/category/new")}
-        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded  mb-3 "
-      >
-        Create Category
-      </button>
-      {filteredCategories.length > 0 ? (
-        <div className=" overflow-x-auto">
-          <table className="min-w-350 text-sm text-left border rounded-lg shadow bg-white">
-            <thead className="bg-gray-100 text-gray-600 uppercase text-xs">
-              <tr>
-                <th className="px-4 py-3">Name</th>
-                <th className="px-4 py-3">Description</th>
-                <th className="px-4 py-3">Created Date</th>
-                <th className="px-4 py-3">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredCategories.map((category) => (
-                <tr key={category._id} className="border-t hover:bg-gray-50">
-                  <td className="px-4 py-3 font-medium text-gray-900">
-                    {category.name}
-                  </td>
-                  <td className="px-4 py-3 text-gray-700">
-                    {category.description || "N/A"}
-                  </td>
-                  <td className="px-4 py-3 text-gray-500">
-                    {new Date(category.createdAt).toLocaleDateString()}
-                  </td>
-                  <td className="px-4 py-3">
-                    <button
-                      onClick={() => navigate(`/category/${category._id}`)}
-                      className="text-blue-600 hover:underline"
-                    >
-                      View
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <p className="text-center text-gray-500 mt-8">No categories found.</p>
       )}
     </div>
   );
 }
-
-export default CategoryPage;

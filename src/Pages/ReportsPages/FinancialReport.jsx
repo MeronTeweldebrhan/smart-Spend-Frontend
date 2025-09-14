@@ -8,6 +8,7 @@ const REPORT_OPTIONS = [
   { key: "trialBalance", label: "Trial Balance", endpoint: "/reports/trial-balance" },
   { key: "incomeStatement", label: "Income Statement", endpoint: "/reports/income-statement" },
   { key: "balanceSheet", label: "Balance Sheet", endpoint: "/reports/balance-sheet" },
+  { key: "cashFlow", label: "Cash Flow Statement", endpoint: "/reports/cash-flow" }, // ✅ NEW
 ];
 
 const Reports = ({ activeAccountId }) => {
@@ -23,6 +24,7 @@ const Reports = ({ activeAccountId }) => {
     trialBalance: [],
     incomeStatement: null,
     balanceSheet: null,
+    cashFlow: null,
   });
 
   const formatCurrency = (amount) =>
@@ -201,6 +203,34 @@ const Reports = ({ activeAccountId }) => {
       <Total label={`Total ${title}`} value={total} />
     </div>
   );
+const renderCashFlow = () => {
+  const cashFlow = reportsData.cashFlow;
+  if (!cashFlow) return <p className="text-center text-gray-500">No cash flow data to display.</p>;
+
+  return (
+    <ReportCard title="Cash Flow Statement">
+      <Section title="Operating Activities">
+        <LineItem name="Net Income" value={cashFlow.netIncome} />
+        <LineItem name="Operating Activities" value={cashFlow.operatingActivities} />
+      </Section>
+
+      <Section title="Investing Activities">
+        <LineItem name="Investing Cash Flow" value={cashFlow.investingActivities} />
+      </Section>
+
+      <Section title="Financing Activities">
+        <LineItem name="Financing Cash Flow" value={cashFlow.financingActivities} />
+      </Section>
+
+      <Total label="Net Cash Flow" value={cashFlow.netCashFlow} highlight />
+
+      <Section title="Cash Position">
+        <LineItem name="Opening Cash" value={cashFlow.details?.openingCash || 0} />
+        <LineItem name="Closing Cash" value={cashFlow.details?.closingCash || 0} />
+      </Section>
+    </ReportCard>
+  );
+};
 
   const renderBalanceSheet = () => {
     const balanceSheet = reportsData.balanceSheet;
@@ -259,6 +289,7 @@ const Reports = ({ activeAccountId }) => {
         {selectedReports.trialBalance && renderTrialBalance()}
         {selectedReports.incomeStatement && renderIncomeStatement()}
         {selectedReports.balanceSheet && renderBalanceSheet()}
+        {selectedReports.cashFlow && renderCashFlow()} 
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import backendClient from "../Clients/backendClient.js";
-import { useAuth } from "../Context/useAuth.js";
+import backendClient from "../../Clients/backendClient.js";
+import { useAuth } from "../../Context/useAuth.js";
 
 function LoginPage() {
   const [formData, setFormData] = useState({
